@@ -1,0 +1,65 @@
+{
+  "reportVersion": "1.0",
+  "assignmentId": "assignment-1795181719620-lightprint",
+  "assignmentName": "Playing Around with APIs",
+  "studentIdentifier": "b.dushime1@alustudent.com",
+  "repoUrl": "https://github.com/bdushime1-beep/lightprint.git",
+  "repoHeadCommit": "4d9f6a87a14d1d18bcc17b2118d7061a327af389",
+  "metrics": {
+    "authorship": {
+      "totalLines": 1228,
+      "manualLines": 1074,
+      "permittedAILines": 154,
+      "prohibitedAILines": 0,
+      "flaggedAILines": 0,
+      "authorshipPercentage": 12.54071661237785,
+      "prohibitedPercentage": 0.0
+    },
+    "ownership": {
+      "score": 100.0,
+      "filesReviewed": 4,
+      "filesUnreviewed": 0,
+      "unreviewedLines": 0,
+      "averageReviewTimeMs": 492000.0
+    },
+    "violations": [],
+    "trackingGaps": []
+  },
+  "policy": {
+    "maxAuthorshipPercentage": 20,
+    "minOwnershipScore": 100,
+    "exemptFileGlobs": [
+      "**/README*",
+      "**/*.md",
+      "**/package.json",
+      "**/package-lock.json",
+      "**/.gitignore",
+      "**/LICENSE*",
+      "**/node_modules/**",
+      "**/.git/**"
+    ],
+    "prohibitedMethods": [
+      "external-file-change",
+      "git-commit-marker"
+    ],
+    "permittedMethods": [
+      "inline-completion-api"
+    ],
+    "flaggedMethods": [
+      "large-paste",
+      "change-velocity"
+    ]
+  },
+  "exclusionAudit": [
+    {
+      "timestamp": 1795178119620,
+      "globs": [],
+      "source": "assignment-activated"
+    }
+  ],
+  "generatedAt": 1795181719620,
+  "integrity": {
+    "algorithm": "sha256",
+    "hash": "11e9e06ada4a3bebf388ca1b0674a9e3bd53d9dd3b238d8e1ef5cdc6a77c6dba"
+  }
+}
