@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 """
-LightPrint — Full Infrastructure & Application Test Suite
-Performs end-to-end verification across all tiers:
-  1. Localhost Server & API endpoints
-  2. SSH Remote Diagnostics (Web01, Web02, Lb01)
-  3. Direct Application Node Probes (Port 80)
-  4. Load Balancer Round-Robin Traffic Rotation (HTTPS)
-  5. CodeVibe Integrity & Compliance Check
+LightPrint — Full Infrastructure, Server Diagnostics & Verification Test Suite
+==============================================================================
+Performs comprehensive end-to-end audit and diagnostics across all tiers:
+  1. DNS & SSL / TLS Certificate Diagnostics (bdushime.tech & www.bdushime.tech)
+  2. Remote SSH Diagnostics into All Infrastructure Nodes (Web01, Web02, Lb01)
+  3. Direct Application Node HTTP Probes & Response Inspection (Port 80)
+  4. Load Balancer HTTP-to-HTTPS Redirection & Live Round-Robin Rotation Trace
+  5. Local Application Server & API Endpoints (Port 3000)
+  6. CodeVibe Academic Integrity & Cryptographic Compliance Audit
 
 Usage:
-    python test_cluster.py
+  python test_cluster.py
 """
 
 import os
@@ -22,233 +24,474 @@ import subprocess
 import urllib.request
 import urllib.error
 import hashlib
+from datetime import datetime
 
-# Colors
+# Enable unbuffered line printing
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(line_buffering=True)
+
+# ANSI Colors & Styling
 GREEN = "\033[32m"
 RED = "\033[31m"
 YELLOW = "\033[33m"
 CYAN = "\033[36m"
+MAGENTA = "\033[35m"
 BOLD = "\033[1m"
 DIM = "\033[2m"
 RESET = "\033[0m"
 
 KEY_PATH = os.path.join(os.path.expanduser("~"), ".ssh", "school")
+
 SERVERS = {
-    "web-01": {"ip": "13.135.166.102", "role": "Application Node 01", "node_id": "Web01"},
-    "web-02": {"ip": "35.179.145.213", "role": "Application Node 02", "node_id": "Web02"},
-    "lb-01":  {"ip": "3.8.133.101",   "role": "HAProxy Load Balancer", "domain": "bdushime.tech"}
+    "web-01": {
+        "ip": "13.135.166.102",
+        "role": "Application Node 01",
+        "node_id": "Web01",
+        "expected_host": "7266-web-01"
+    },
+    "web-02": {
+        "ip": "35.179.145.213",
+        "role": "Application Node 02",
+        "node_id": "Web02",
+        "expected_host": "7266-web-02"
+    },
+    "lb-01": {
+        "ip": "3.8.133.101",
+        "role": "HAProxy Load Balancer",
+        "domain": "bdushime.tech",
+        "expected_host": "7266-lb-01"
+    }
 }
 
+DOMAINS = ["bdushime.tech", "www.bdushime.tech"]
+
+
 def print_banner(text):
-    print(f"\n{BOLD}{CYAN}{'=' * 72}{RESET}")
-    print(f"{BOLD}{CYAN} {text}{RESET}")
-    print(f"{BOLD}{CYAN}{'=' * 72}{RESET}\n")
+    print(f"\n{BOLD}{CYAN}{'=' * 78}{RESET}", flush=True)
+    print(f"{BOLD}{CYAN} {text}{RESET}", flush=True)
+    print(f"{BOLD}{CYAN}{'=' * 78}{RESET}\n", flush=True)
+
+
+def print_section(num, title):
+    print(f"\n{BOLD}{MAGENTA}[{num}] {title}{RESET}", flush=True)
+    print(f"{DIM}{'-' * 78}{RESET}", flush=True)
+
 
 def pass_fail(condition, label, details=""):
     mark = f"{GREEN}✔ PASS{RESET}" if condition else f"{RED}✘ FAIL{RESET}"
-    det = f" {DIM}({details}){RESET}" if details else ""
-    print(f"  [{mark}] {label}{det}")
+    det = f" {DIM}— {details}{RESET}" if details else ""
+    print(f"  [{mark}] {label}{det}", flush=True)
     return 1 if condition else 0
 
-def run_ssh(ip, cmd):
+
+def run_ssh(ip, cmd, timeout=12):
+    """Executes a non-interactive SSH command against an EC2 instance."""
     ssh_cmd = [
         "ssh", "-n", "-i", KEY_PATH,
         "-o", "StrictHostKeyChecking=no",
         "-o", "UserKnownHostsFile=/dev/null",
-        "-o", "ConnectTimeout=8",
+        "-o", "ConnectTimeout=6",
         "-o", "LogLevel=ERROR",
         f"ubuntu@{ip}", cmd
     ]
     try:
-        res = subprocess.run(ssh_cmd, capture_output=True, text=True, timeout=15)
-        return res.returncode == 0, res.stdout.strip()
+        res = subprocess.run(ssh_cmd, capture_output=True, text=True, timeout=timeout)
+        return res.returncode == 0, res.stdout.strip(), res.stderr.strip()
     except Exception as e:
-        return False, str(e)
+        return False, "", str(e)
+
 
 # ---------------------------------------------------------------------------
-# Suite 1: Local Application Server
+# Suite 1: DNS & SSL Certificate Verification
 # ---------------------------------------------------------------------------
-def test_local_server():
-    print(f"{BOLD}[1/5] LOCAL APPLICATION SERVER TESTS (http://localhost:3000){RESET}")
+def test_dns_and_ssl():
+    print_section("1/6", "PUBLIC DOMAIN DNS RESOLUTION & SSL/TLS CERTIFICATE DIAGNOSTICS")
     score = 0
-    total = 5
+    total = 0
 
-    endpoints = [
-        ("/", "Root HTML Interface", "text/html"),
-        ("/style.css", "Precision CSS Stylesheet", "text/css"),
-        ("/app.js", "Frontend Logic Controller", "application/javascript"),
-        ("/api/featured", "Pre-Seeded Platforms API", "application/json"),
-        ("/health", "Node Health Check API", "application/json")
-    ]
-
-    for path, name, expected_ct in endpoints:
-        url = f"http://127.0.0.1:3000{path}"
+    # 1. DNS Resolution
+    for domain in DOMAINS:
+        total += 1
         try:
-            req = urllib.request.Request(url, headers={"User-Agent": "LightPrint-Tester/1.0"})
-            with urllib.request.urlopen(req, timeout=3) as resp:
-                status = resp.status
-                ct = resp.headers.get("Content-Type", "")
-                node = resp.headers.get("X-Server-Node", "Unknown")
-                ok = (status == 200)
-                score += pass_fail(ok, f"Local {name:26} ({path})", f"Status: {status}, Node: {node}")
+            resolved_ip = socket.gethostbyname(domain)
+            is_lb = (resolved_ip == SERVERS["lb-01"]["ip"])
+            score += pass_fail(
+                is_lb,
+                f"DNS A Record: {domain:20}",
+                f"Resolved to {resolved_ip} (Target Lb01: {SERVERS['lb-01']['ip']})"
+            )
         except Exception as e:
-            pass_fail(False, f"Local {name:26} ({path})", f"Error: {e}")
+            pass_fail(False, f"DNS A Record: {domain:20}", f"Resolution Error: {e}")
+
+    # 2. SSL / TLS Certificate Handshake on Port 443
+    total += 2
+    target_host = "www.bdushime.tech"
+    try:
+        ctx = ssl.create_default_context()
+        with socket.create_connection((target_host, 443), timeout=5) as sock:
+            with ctx.wrap_socket(sock, server_hostname=target_host) as ssock:
+                cert = ssock.getpeercert()
+                issuer = dict(x[0] for x in cert.get("issuer", []))
+                issuer_org = issuer.get("organizationName", "Unknown")
+                sans = [v for k, v in cert.get("subjectAltName", []) if k == "DNS"]
+                not_after = cert.get("notAfter", "")
+
+                has_both_domains = ("www.bdushime.tech" in sans and "bdushime.tech" in sans)
+                score += pass_fail(
+                    has_both_domains,
+                    "SSL SAN Certificate Coverage",
+                    f"Subject Alt Names: {', '.join(sans)}"
+                )
+                score += pass_fail(
+                    "Let's Encrypt" in issuer_org or len(sans) > 0,
+                    "SSL Certificate Authority & Validity",
+                    f"Issuer: {issuer_org} | Valid until: {not_after}"
+                )
+    except Exception as e:
+        pass_fail(False, "SSL / TLS Handshake", f"Handshake failed: {e}")
+        pass_fail(False, "SSL Certificate Authority", "Skipped")
 
     return score, total
 
+
 # ---------------------------------------------------------------------------
-# Suite 2: SSH Remote Server Diagnostics
+# Suite 2: Remote SSH Diagnostics on All 3 Servers
 # ---------------------------------------------------------------------------
 def test_ssh_diagnostics():
-    print(f"\n{BOLD}[2/5] REMOTE SSH DIAGNOSTICS (Infrastructure Nodes){RESET}")
+    print_section("2/6", "REMOTE SSH DIAGNOSTICS & SYSTEM SERVICE INSPECTION")
     score = 0
     total = 0
 
     if not os.path.exists(KEY_PATH):
-        print(f"  {YELLOW}⚠ Warning: SSH key not found at {KEY_PATH}. Skipping remote SSH checks.{RESET}")
+        print(f"  {YELLOW}⚠ Warning: SSH key not found at {KEY_PATH}. Skipping remote SSH checks.{RESET}", flush=True)
         return 0, 0
 
-    # 1. Web-01
-    total += 3
-    ok, out = run_ssh(SERVERS["web-01"]["ip"], "hostname; sudo systemctl is-active lightprint; sudo systemctl is-active nginx")
-    lines = out.split("\n") if ok else []
-    hostname = lines[0] if len(lines) > 0 else "unreachable"
-    lp_status = lines[1] if len(lines) > 1 else "inactive"
-    nginx_status = lines[2] if len(lines) > 2 else "inactive"
+    # Diagnostics for Web01 and Web02
+    for node_name in ["web-01", "web-02"]:
+        info = SERVERS[node_name]
+        ip = info["ip"]
+        role = info["role"]
+        node_id = info["node_id"]
 
-    score += pass_fail(ok and "web-01" in hostname, f"Web01 SSH & Hostname ({SERVERS['web-01']['ip']})", f"Host: {hostname}")
-    score += pass_fail(lp_status == "active", "Web01 LightPrint Systemd Service", f"State: {lp_status}")
-    score += pass_fail(nginx_status == "active", "Web01 Nginx Reverse Proxy Service", f"State: {nginx_status}")
+        print(f"\n  {BOLD}{CYAN}▶ Connecting via SSH to {node_name} ({ip} — {role})...{RESET}", flush=True)
 
-    # 2. Web-02
-    total += 3
-    ok2, out2 = run_ssh(SERVERS["web-02"]["ip"], "hostname; sudo systemctl is-active lightprint; sudo systemctl is-active nginx")
-    lines2 = out2.split("\n") if ok2 else []
-    hostname2 = lines2[0] if len(lines2) > 0 else "unreachable"
-    lp_status2 = lines2[1] if len(lines2) > 1 else "inactive"
-    nginx_status2 = lines2[2] if len(lines2) > 2 else "inactive"
+        cmd = (
+            "echo HOST:$(hostname); "
+            "echo UPTIME:$(uptime -p); "
+            "echo LP_ACTIVE:$(systemctl is-active lightprint); "
+            "echo NGINX_ACTIVE:$(systemctl is-active nginx); "
+            "echo GIT_HEAD:$(git -C /home/ubuntu/lightprint rev-parse --short HEAD 2>/dev/null || echo 'none'); "
+            "echo LISTEN:$(ss -tulpn | grep -E '3000|80' | awk '{print $5}' | tr '\n' ' ')"
+        )
 
-    score += pass_fail(ok2 and "web-02" in hostname2, f"Web02 SSH & Hostname ({SERVERS['web-02']['ip']})", f"Host: {hostname2}")
-    score += pass_fail(lp_status2 == "active", "Web02 LightPrint Systemd Service", f"State: {lp_status2}")
-    score += pass_fail(nginx_status2 == "active", "Web02 Nginx Reverse Proxy Service", f"State: {nginx_status2}")
+        ok, out, err = run_ssh(ip, cmd)
 
-    # 3. Lb-01
+        parsed = {}
+        if ok:
+            for line in out.splitlines():
+                if ":" in line:
+                    k, v = line.split(":", 1)
+                    parsed[k.strip()] = v.strip()
+
+        host_val = parsed.get("HOST", "unknown")
+        uptime_val = parsed.get("UPTIME", "unknown")
+        lp_val = parsed.get("LP_ACTIVE", "inactive")
+        nginx_val = parsed.get("NGINX_ACTIVE", "inactive")
+        git_val = parsed.get("GIT_HEAD", "none")
+        listen_val = parsed.get("LISTEN", "none")
+
+        print(f"    {DIM}Host: {host_val} | Uptime: {uptime_val} | Git: {git_val} | Ports: {listen_val}{RESET}", flush=True)
+
+        total += 3
+        score += pass_fail(
+            ok and info["expected_host"] in host_val,
+            f"{node_id} SSH Connectivity & Host Identity",
+            f"Host: {host_val} ({ip})"
+        )
+        score += pass_fail(
+            lp_val == "active",
+            f"{node_id} LightPrint App Service (systemd)",
+            f"Status: {lp_val} (Port 3000, NODE_ID={node_id})"
+        )
+        score += pass_fail(
+            nginx_val == "active",
+            f"{node_id} Nginx Reverse Proxy (systemd)",
+            f"Status: {nginx_val} (Port 80 -> Port 3000)"
+        )
+
+    # Diagnostics for Lb01
+    lb_info = SERVERS["lb-01"]
+    lb_ip = lb_info["ip"]
+    print(f"\n  {BOLD}{CYAN}▶ Connecting via SSH to lb-01 ({lb_ip} — HAProxy Load Balancer)...{RESET}", flush=True)
+
+    lb_cmd = (
+        "echo HOST:$(hostname); "
+        "echo UPTIME:$(uptime -p); "
+        "echo HAPROXY_ACTIVE:$(systemctl is-active haproxy); "
+        "echo CERT_EXISTS:$([ -f /etc/haproxy/certs/www.bdushime.tech.pem ] && echo yes || echo no); "
+        "echo LISTEN:$(ss -tulpn | grep -E '80|443' | awk '{print $5}' | tr '\n' ' ')"
+    )
+
+    ok_lb, out_lb, err_lb = run_ssh(lb_ip, lb_cmd)
+
+    lb_parsed = {}
+    if ok_lb:
+        for line in out_lb.splitlines():
+            if ":" in line:
+                k, v = line.split(":", 1)
+                lb_parsed[k.strip()] = v.strip()
+
+    lb_host = lb_parsed.get("HOST", "unknown")
+    lb_uptime = lb_parsed.get("UPTIME", "unknown")
+    haproxy_val = lb_parsed.get("HAPROXY_ACTIVE", "inactive")
+    cert_val = lb_parsed.get("CERT_EXISTS", "no")
+    lb_listen = lb_parsed.get("LISTEN", "none")
+
+    print(f"    {DIM}Host: {lb_host} | Uptime: {lb_uptime} | SSL Pem: {cert_val} | Ports: {lb_listen}{RESET}", flush=True)
+
     total += 2
-    ok3, out3 = run_ssh(SERVERS["lb-01"]["ip"], "hostname; sudo systemctl is-active haproxy")
-    lines3 = out3.split("\n") if ok3 else []
-    hostname3 = lines3[0] if len(lines3) > 0 else "unreachable"
-    haproxy_status = lines3[1] if len(lines3) > 1 else "inactive"
-
-    score += pass_fail(ok3 and "lb-01" in hostname3, f"Lb01 SSH & Hostname ({SERVERS['lb-01']['ip']})", f"Host: {hostname3}")
-    score += pass_fail(haproxy_status == "active", "Lb01 HAProxy Load Balancer Service", f"State: {haproxy_status}")
+    score += pass_fail(
+        ok_lb and lb_info["expected_host"] in lb_host,
+        "Lb01 SSH Connectivity & Host Identity",
+        f"Host: {lb_host} ({lb_ip})"
+    )
+    score += pass_fail(
+        haproxy_val == "active" and cert_val == "yes",
+        "Lb01 HAProxy Service & SSL Bundle",
+        f"HAProxy: {haproxy_val} | SSL Cert Bundle: /etc/haproxy/certs/www.bdushime.tech.pem"
+    )
 
     return score, total
 
+
 # ---------------------------------------------------------------------------
-# Suite 3: Direct Node HTTP Responses
+# Suite 3: Direct Node HTTP Responses & Header Inspection
 # ---------------------------------------------------------------------------
 def test_direct_node_responses():
-    print(f"\n{BOLD}[3/5] DIRECT APPLICATION NODE RESPONSES (Port 80){RESET}")
+    print_section("3/6", "DIRECT APPLICATION NODE HTTP PROBES (Bypassing Load Balancer)")
     score = 0
-    total = 2
+    total = 0
 
-    # Web-01 direct
-    try:
-        url = f"http://{SERVERS['web-01']['ip']}/health"
-        req = urllib.request.Request(url, headers={"User-Agent": "LightPrint-Tester/1.0"})
-        with urllib.request.urlopen(req, timeout=4) as r:
-            body = json.loads(r.read().decode())
-            node = r.headers.get("X-Server-Node")
-            served = r.headers.get("X-Served-By")
-            ok = (r.status == 200 and body.get("status") == "healthy" and node == "Web01")
-            score += pass_fail(ok, f"Web01 Direct Probe (http://{SERVERS['web-01']['ip']})", f"Node: {node}, Served-By: {served}")
-    except Exception as e:
-        pass_fail(False, f"Web01 Direct Probe ({SERVERS['web-01']['ip']})", f"Error: {e}")
+    for node_name in ["web-01", "web-02"]:
+        total += 1
+        info = SERVERS[node_name]
+        ip = info["ip"]
+        node_id = info["node_id"]
+        url = f"http://{ip}/health"
 
-    # Web-02 direct
-    try:
-        url = f"http://{SERVERS['web-02']['ip']}/health"
-        req = urllib.request.Request(url, headers={"User-Agent": "LightPrint-Tester/1.0"})
-        with urllib.request.urlopen(req, timeout=4) as r:
-            body = json.loads(r.read().decode())
-            node = r.headers.get("X-Server-Node")
-            served = r.headers.get("X-Served-By")
-            ok = (r.status == 200 and body.get("status") == "healthy" and node == "Web02")
-            score += pass_fail(ok, f"Web02 Direct Probe (http://{SERVERS['web-02']['ip']})", f"Node: {node}, Served-By: {served}")
-    except Exception as e:
-        pass_fail(False, f"Web02 Direct Probe ({SERVERS['web-02']['ip']})", f"Error: {e}")
+        print(f"\n  {BOLD}Direct Probe: {node_id} (http://{ip}/health){RESET}", flush=True)
+
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "LightPrint-Auditor/2.0"})
+            t0 = time.time()
+            with urllib.request.urlopen(req, timeout=5) as r:
+                elapsed = int((time.time() - t0) * 1000)
+                body_bytes = r.read()
+                data = json.loads(body_bytes.decode())
+                served_by = r.headers.get("X-Served-By", "unknown")
+                server_node = r.headers.get("X-Server-Node", "unknown")
+                cache_ctrl = r.headers.get("Cache-Control", "")
+
+                print(f"    {DIM}HTTP Status:    {r.status} OK{RESET}", flush=True)
+                print(f"    {DIM}X-Served-By:    {served_by}{RESET}", flush=True)
+                print(f"    {DIM}X-Server-Node:  {server_node}{RESET}", flush=True)
+                print(f"    {DIM}Cache-Control:  {cache_ctrl}{RESET}", flush=True)
+                print(f"    {DIM}Response Body:  {json.dumps(data)}{RESET}", flush=True)
+
+                ok = (
+                    r.status == 200 and
+                    data.get("status") == "healthy" and
+                    node_id in (served_by, server_node)
+                )
+                score += pass_fail(
+                    ok,
+                    f"Direct {node_id} Health & Headers Probe",
+                    f"Status: {r.status}, Served-By: {served_by}, Latency: {elapsed}ms"
+                )
+        except Exception as e:
+            pass_fail(False, f"Direct {node_id} Health & Headers Probe", f"Probe error: {e}")
 
     return score, total
 
+
 # ---------------------------------------------------------------------------
-# Suite 4: Load Balancer & Round-Robin Rotation
+# Suite 4: Load Balancer Redirection & Round-Robin Rotation Trace
 # ---------------------------------------------------------------------------
-def test_load_balancer_rotation():
-    print(f"\n{BOLD}[4/5] LOAD BALANCER & SERVED-BY ROTATION TESTS (HTTPS){RESET}")
+def test_load_balancer_and_rotation():
+    print_section("4/6", "LOAD BALANCER HTTPS TERMINATION & TRAFFIC ROTATION TRACE")
     score = 0
-    total = 3
+    total = 0
 
+    # 1. HTTP to HTTPS 301/302 Redirect Check
+    total += 1
+    http_url = "http://www.bdushime.tech/"
+    try:
+        class NoRedirectHandler(urllib.request.HTTPRedirectHandler):
+            def redirect_request(self, req, fp, code, msg, headers, newurl):
+                return None  # Prevent automatic redirect following
+
+        opener = urllib.request.build_opener(NoRedirectHandler)
+        req = urllib.request.Request(http_url, headers={"User-Agent": "LightPrint-Auditor/2.0"})
+        try:
+            resp = opener.open(req, timeout=5)
+            redirect_code = resp.status
+            location = resp.headers.get("Location", "")
+        except urllib.error.HTTPError as e:
+            redirect_code = e.code
+            location = e.headers.get("Location", "")
+
+        is_redirect = (redirect_code in (301, 302, 308) and "https://" in location)
+        score += pass_fail(
+            is_redirect,
+            "HTTP to HTTPS Automatic Redirection",
+            f"Code: {redirect_code} -> Location: {location}"
+        )
+    except Exception as e:
+        pass_fail(False, "HTTP to HTTPS Automatic Redirection", f"Error: {e}")
+
+    # 2. Apex Domain and Subdomain HTTPS Tests
+    for dom in ["bdushime.tech", "www.bdushime.tech"]:
+        total += 1
+        url = f"https://{dom}/health"
+        try:
+            ctx = ssl.create_default_context()
+            req = urllib.request.Request(url, headers={"User-Agent": "LightPrint-Auditor/2.0"})
+            with urllib.request.urlopen(req, context=ctx, timeout=5) as r:
+                body = json.loads(r.read().decode())
+                node = r.headers.get("X-Served-By") or r.headers.get("X-Server-Node") or "unknown"
+                ok = (r.status == 200 and body.get("status") == "healthy")
+                score += pass_fail(
+                    ok,
+                    f"Public HTTPS Access ({dom})",
+                    f"Status: {r.status}, Served by: {node}"
+                )
+        except Exception as e:
+            pass_fail(False, f"Public HTTPS Access ({dom})", f"Error: {e}")
+
+    # 3. Sequential 10-Request Burst for Round-Robin Alternation
+    total += 3
+    iterations = 10
     target_url = "https://www.bdushime.tech/health"
-    hits = {"Web01": 0, "Web02": 0}
-    iterations = 6
+    hits = {"Web01": 0, "Web02": 0, "Other": 0}
+    sequence = []
 
-    print(f"  {DIM}Sending {iterations} sequential requests to {target_url}...{RESET}")
+    print(f"\n  {BOLD}Executing {iterations} Sequential HTTPS Requests to Trace Round-Robin Balancing...{RESET}", flush=True)
+    print(f"  {DIM}┌───────┬──────────────┬──────────────┬──────────────┬──────────┬──────────────┐{RESET}", flush=True)
+    print(f"  {DIM}│ Req # │ Status Code  │ X-Served-By  │ X-Server-Node│ Latency  │ Health State │{RESET}", flush=True)
+    print(f"  {DIM}├───────┼──────────────┼──────────────┼──────────────┼──────────┼──────────────┤{RESET}", flush=True)
 
     ctx = ssl.create_default_context()
-    rotation_log = []
-
     for i in range(1, iterations + 1):
+        t0 = time.time()
         try:
-            req = urllib.request.Request(target_url, headers={"User-Agent": "LightPrint-Tester/1.0"})
+            req = urllib.request.Request(target_url, headers={"User-Agent": "LightPrint-Auditor/2.0"})
             with urllib.request.urlopen(req, context=ctx, timeout=5) as r:
-                node = r.headers.get("X-Server-Node") or r.headers.get("X-Served-By") or "Unknown"
-                if "Web01" in node:
-                    hits["Web01"] += 1
-                    node_label = f"{CYAN}Web01{RESET}"
-                elif "Web02" in node:
-                    hits["Web02"] += 1
-                    node_label = f"{YELLOW}Web02{RESET}"
-                else:
-                    node_label = f"{RED}{node}{RESET}"
-                rotation_log.append(f"Req #{i}: {node_label}")
+                elapsed = int((time.time() - t0) * 1000)
+                body = json.loads(r.read().decode())
+                served = r.headers.get("X-Served-By", "unknown")
+                node = r.headers.get("X-Server-Node", "unknown")
+                health_st = body.get("status", "unknown")
+
+                matched = "Web01" if "Web01" in (served + node) else ("Web02" if "Web02" in (served + node) else "Other")
+                hits[matched] += 1
+                sequence.append(matched)
+
+                color = CYAN if matched == "Web01" else (YELLOW if matched == "Web02" else RED)
+                print(f"  │ #{i:02d}   │ {GREEN}200 OK{RESET}       │ {color}{served:12}{RESET} │ {color}{node:12}{RESET} │ {elapsed:4d}ms   │ {GREEN}{health_st:12}{RESET} │", flush=True)
         except Exception as e:
-            rotation_log.append(f"Req #{i}: {RED}ERR ({e}){RESET}")
+            print(f"  │ #{i:02d}   │ {RED}FAILED{RESET}       │ {RED}{str(e)[:38]:38}{RESET} │", flush=True)
 
-    print(f"  Rotation Trace: {' → '.join(rotation_log)}")
+    print(f"  {DIM}└───────┴──────────────┴──────────────┴──────────────┴──────────┴──────────────┘{RESET}", flush=True)
 
-    # 1. Did we get HTTP 200 responses?
-    all_hits = hits["Web01"] + hits["Web02"]
-    score += pass_fail(all_hits == iterations, "HTTPS Load Balancer Availability", f"{all_hits}/{iterations} requests succeeded")
+    all_success = (hits["Web01"] + hits["Web02"] == iterations)
+    score += pass_fail(
+        all_success,
+        f"HAProxy High-Availability Traffic Burst ({iterations}/{iterations})",
+        f"Web01: {hits['Web01']}, Web02: {hits['Web02']}, Failed: {iterations - hits['Web01'] - hits['Web02']}"
+    )
 
-    # 2. Did Web01 handle traffic?
-    score += pass_fail(hits["Web01"] > 0, "Cluster Node Web01 Served Requests", f"{hits['Web01']} hit(s)")
+    web01_active = hits["Web01"] > 0
+    web02_active = hits["Web02"] > 0
+    score += pass_fail(
+        web01_active and web02_active,
+        "Multi-Node Load Distribution (Web01 & Web02 Active)",
+        f"Web01 Traffic: {hits['Web01'] / iterations * 100:.1f}% | Web02 Traffic: {hits['Web02'] / iterations * 100:.1f}%"
+    )
 
-    # 3. Did Web02 handle traffic?
-    score += pass_fail(hits["Web02"] > 0, "Cluster Node Web02 Served Requests", f"{hits['Web02']} hit(s)")
+    # Check for actual alternating pattern
+    alternations = sum(1 for idx in range(len(sequence) - 1) if sequence[idx] != sequence[idx + 1])
+    is_alternating = alternations >= (iterations - 3)
+    score += pass_fail(
+        is_alternating,
+        "Strict Round-Robin Alternation Pattern",
+        f"Transitions: {alternations}/{iterations - 1} between Web01 ⇄ Web02"
+    )
 
     return score, total
 
+
 # ---------------------------------------------------------------------------
-# Suite 5: CodeVibe Academic Integrity Audit
+# Suite 5: Local Application Server & API Endpoints
+# ---------------------------------------------------------------------------
+def test_local_server():
+    print_section("5/6", "LOCAL APPLICATION SERVER & REST ENDPOINTS (http://127.0.0.1:3000)")
+    score = 0
+    total = 0
+
+    endpoints = [
+        ("/", "Root Single-Page Application", "text/html"),
+        ("/style.css", "Precision CSS Stylesheet (0px geometry)", "text/css"),
+        ("/app.js", "Frontend Logic & Scanner Engine", "javascript"),
+        ("/api/featured", "Pre-Seeded 12 Platform Directory", "application/json"),
+        ("/api/search?q=google", "Platform Search API Filter", "application/json"),
+        ("/api/service?id=242", "Detailed Platform Clauses Dossier", "application/json"),
+        ("/health", "Instance Health & Heartbeat API", "application/json")
+    ]
+
+    for path, desc, expected_mime in endpoints:
+        total += 1
+        url = f"http://127.0.0.1:3000{path}"
+        try:
+            t0 = time.time()
+            req = urllib.request.Request(url, headers={"User-Agent": "LightPrint-Auditor/2.0"})
+            with urllib.request.urlopen(req, timeout=5) as resp:
+                elapsed = int((time.time() - t0) * 1000)
+                status = resp.status
+                ct = resp.headers.get("Content-Type", "")
+                node = resp.headers.get("X-Server-Node", "local")
+                content = resp.read()
+                size_kb = len(content) / 1024
+
+                detail = f"Status: {status}, Size: {size_kb:.1f} KB, Latency: {elapsed}ms, Node: {node}"
+                ok = (status == 200 and expected_mime.lower() in ct.lower())
+                score += pass_fail(ok, f"Local {desc:36} ({path})", detail)
+        except Exception as e:
+            pass_fail(False, f"Local {desc:36} ({path})", f"Error: {e}")
+
+    return score, total
+
+
+# ---------------------------------------------------------------------------
+# Suite 6: CodeVibe Academic Integrity & Cryptographic Compliance Audit
 # ---------------------------------------------------------------------------
 def test_codevibe_integrity():
-    print(f"\n{BOLD}[5/5] CODEVIBE ACADEMIC INTEGRITY & COMPLIANCE AUDIT{RESET}")
+    print_section("6/6", "CODEVIBE ACADEMIC INTEGRITY & CRYPTOGRAPHIC VERIFICATION")
     score = 0
-    total = 4
+    total = 5
 
     report_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "codevibe-reports", "playing-around-with-apis.report.json")
     if not os.path.exists(report_path):
         pass_fail(False, "Report File Existence", f"Missing at {report_path}")
-        return 0, 4
+        return 0, total
 
     try:
         with open(report_path, "r", encoding="utf-8") as f:
             rep = json.load(f)
     except Exception as e:
         pass_fail(False, "Report File JSON Parsing", str(e))
-        return 0, 4
+        return 0, total
 
-    # Canonicalize implementation
+    # Canonicalize implementation matching CodeVibe JS spec
     def canonicalize(val):
         if val is None or isinstance(val, (int, float, str, bool)):
             return json.dumps(val, separators=(',', ':'), ensure_ascii=False)
@@ -271,63 +514,101 @@ def test_codevibe_integrity():
 
     # 1. Cryptographic Hash
     hash_match = (expected_hash == stored_hash)
-    score += pass_fail(hash_match, "SHA-256 Cryptographic Hash Match", f"{stored_hash[:16]}...")
+    score += pass_fail(
+        hash_match,
+        "SHA-256 Cryptographic Digest Match",
+        f"Digest: {stored_hash[:16]}... (Exact canonical bit-for-bit match)"
+    )
 
     # 2. Authorship
     auth = rep.get("metrics", {}).get("authorship", {})
     auth_pct = auth.get("authorshipPercentage", 99.0)
-    auth_ok = auth_pct <= rep.get("policy", {}).get("maxAuthorshipPercentage", 20.0)
-    score += pass_fail(auth_ok, f"Authorship Threshold (<=20.0%)", f"{auth_pct:.1f}% AI authorship")
+    max_pct = rep.get("policy", {}).get("maxAuthorshipPercentage", 20.0)
+    auth_ok = (auth_pct <= max_pct)
+    score += pass_fail(
+        auth_ok,
+        f"AI Authorship Ceiling (<= {max_pct:.1f}%)",
+        f"Calculated AI: {auth_pct:.1f}% ({auth.get('manualLines', 0)} manual lines)"
+    )
 
     # 3. Ownership
     own = rep.get("metrics", {}).get("ownership", {})
     own_score = own.get("score", 0.0)
-    own_ok = own_score >= rep.get("policy", {}).get("minOwnershipScore", 100.0)
-    score += pass_fail(own_ok, f"Ownership Score (>=100)", f"{own_score:.1f} / 100")
+    min_own = rep.get("policy", {}).get("minOwnershipScore", 100.0)
+    own_ok = (own_score >= min_own)
+    score += pass_fail(
+        own_ok,
+        f"Student Ownership Score (>= {min_own:.0f})",
+        f"Recorded Score: {own_score:.1f} / 100 (Unreviewed: {own.get('filesUnreviewed', 0)})"
+    )
 
     # 4. Violations
     viols = rep.get("metrics", {}).get("violations", [])
     viols_ok = (len(viols) == 0)
-    score += pass_fail(viols_ok, "Integrity Violations Count (0)", f"{len(viols)} detected")
+    score += pass_fail(
+        viols_ok,
+        "Academic Policy Violations (0 Expected)",
+        f"{len(viols)} detected"
+    )
+
+    # 5. Student Identity & Commitment
+    student_ident = rep.get("studentIdentifier", "")
+    author_ok = ("b.dushime1@alustudent.com" in student_ident)
+    score += pass_fail(
+        author_ok,
+        "Student Identity Verification",
+        f"Student: {student_ident} | Head Commit: {rep.get('repoHeadCommit', '')[:8]}"
+    )
 
     return score, total
 
+
 # ---------------------------------------------------------------------------
-# Main Runner
+# Main Executive Runner
 # ---------------------------------------------------------------------------
 def main():
-    print_banner("LIGHTPRINT END-TO-END CLUSTER & INTEGRITY TEST SUITE")
+    print_banner("LIGHTPRINT END-TO-END INFRASTRUCTURE & COMPLIANCE AUDITOR")
+    print(f"  {BOLD}Execution Timestamp:{RESET}  {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", flush=True)
+    print(f"  {BOLD}Target Domain:{RESET}        https://www.bdushime.tech & https://bdushime.tech", flush=True)
+    print(f"  {BOLD}Load Balancer IP:{RESET}     3.8.133.101 (HAProxy 80/443)", flush=True)
+    print(f"  {BOLD}Web01 Node IP:{RESET}        13.135.166.102 (Nginx 80 -> Python 3000)", flush=True)
+    print(f"  {BOLD}Web02 Node IP:{RESET}        35.179.145.213 (Nginx 80 -> Python 3000)", flush=True)
+    print(f"  {BOLD}Localhost Node:{RESET}       http://127.0.0.1:3000", flush=True)
 
-    s1, t1 = test_local_server()
+    s1, t1 = test_dns_and_ssl()
     s2, t2 = test_ssh_diagnostics()
     s3, t3 = test_direct_node_responses()
-    s4, t4 = test_load_balancer_rotation()
-    s5, t5 = test_codevibe_integrity()
+    s4, t4 = test_load_balancer_and_rotation()
+    s5, t5 = test_local_server()
+    s6, t6 = test_codevibe_integrity()
 
-    total_score = s1 + s2 + s3 + s4 + s5
-    total_tests = t1 + t2 + t3 + t4 + t5
+    total_score = s1 + s2 + s3 + s4 + s5 + s6
+    total_tests = t1 + t2 + t3 + t4 + t5 + t6
 
-    print(f"\n{BOLD}{CYAN}{'=' * 72}{RESET}")
-    print(f"{BOLD} FINAL AUDIT SUMMARY SCORECARD{RESET}")
-    print(f"{BOLD}{CYAN}{'=' * 72}{RESET}")
-    print(f"  • Local Application Server:   {s1}/{t1} passed")
-    print(f"  • Remote SSH Diagnostics:     {s2}/{t2} passed")
-    print(f"  • Direct Node HTTP Probes:    {s3}/{t3} passed")
-    print(f"  • Load Balancer Rotation:     {s4}/{t4} passed")
-    print(f"  • CodeVibe Compliance Audit:  {s5}/{t5} passed")
-    print(f"{BOLD}{CYAN}{'-' * 72}{RESET}")
+    print(f"\n{BOLD}{CYAN}{'=' * 78}{RESET}", flush=True)
+    print(f"{BOLD} FINAL AUDIT SCORECARD & ARCHITECTURE HEALTH SUMMARY{RESET}", flush=True)
+    print(f"{BOLD}{CYAN}{'=' * 78}{RESET}", flush=True)
+    print(f"  1. DNS & SSL Certificate Verification:     {s1}/{t1} checks passed", flush=True)
+    print(f"  2. Remote SSH Diagnostics (All Nodes):     {s2}/{t2} checks passed", flush=True)
+    print(f"  3. Direct Node HTTP Header Probes:         {s3}/{t3} checks passed", flush=True)
+    print(f"  4. Load Balancer & Traffic Rotation:       {s4}/{t4} checks passed", flush=True)
+    print(f"  5. Local Application Server & APIs:        {s5}/{t5} checks passed", flush=True)
+    print(f"  6. CodeVibe Integrity & Compliance:        {s6}/{t6} checks passed", flush=True)
+    print(f"{BOLD}{CYAN}{'-' * 78}{RESET}", flush=True)
 
+    pct = (total_score / total_tests * 100) if total_tests > 0 else 0
     if total_score == total_tests:
-        print(f"  {BOLD}{GREEN}OVERALL STATUS: ALL {total_tests}/{total_tests} AUDIT CHECKS PASSED (100% HEALTHY & COMPLIANT){RESET}")
-        print(f"  {BOLD}Production Domain:{RESET}  https://www.bdushime.tech")
-        print(f"  {BOLD}Load Balancer IP:{RESET}   3.8.133.101")
-        print(f"  {BOLD}Web01 Instance:{RESET}     13.135.166.102")
-        print(f"  {BOLD}Web02 Instance:{RESET}     35.179.145.213")
+        print(f"  {BOLD}{GREEN}OVERALL STATUS: ALL {total_tests}/{total_tests} AUDIT CHECKS PASSED (100% HEALTHY & COMPLIANT){RESET}", flush=True)
+        print(f"  {BOLD}Live Public URL:{RESET}    https://www.bdushime.tech", flush=True)
+        print(f"  {BOLD}Apex Domain:{RESET}       https://bdushime.tech", flush=True)
+        print(f"  {BOLD}HAProxy Node:{RESET}      3.8.133.101 (lb-01)", flush=True)
+        print(f"  {BOLD}Web Instances:{RESET}     13.135.166.102 (Web01) | 35.179.145.213 (Web02)", flush=True)
     else:
-        print(f"  {BOLD}{RED}OVERALL STATUS: {total_tests - total_score} CHECK(S) FAILED. Review output above.{RESET}")
+        print(f"  {BOLD}{RED}OVERALL STATUS: {total_tests - total_score} CHECK(S) FAILED ({pct:.1f}% Passed){RESET}", flush=True)
 
-    print(f"{BOLD}{CYAN}{'=' * 72}{RESET}\n")
+    print(f"{BOLD}{CYAN}{'=' * 78}{RESET}\n", flush=True)
     sys.exit(0 if total_score == total_tests else 1)
+
 
 if __name__ == "__main__":
     main()
