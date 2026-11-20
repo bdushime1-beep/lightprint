@@ -3,9 +3,9 @@
 > **"Stop blindly clicking 'I Agree'."**  
 > An accessible, distributed web application that unmasks predatory legal clauses, tracking traps, and forced arbitration hidden inside 50-page Terms of Service agreements.
 
-* **Live Load Balancer URL:** `http://lb01.lightprint.internal` *(Replace with your assigned Lb01 public IP/domain)*  
-* **Web01 Direct URL:** `http://web01.lightprint.internal:3000` *(Replace with Web01 public IP:3000)*  
-* **Web02 Direct URL:** `http://web02.lightprint.internal:3000` *(Replace with Web02 public IP:3000)*  
+* **Live Load Balancer URL:** [https://www.bdushime.tech](https://www.bdushime.tech) (and [https://bdushime.tech](https://bdushime.tech))  
+* **Web01 Direct Node:** `http://web-01.bdushime.tech` (`13.135.166.102:80`)  
+* **Web02 Direct Node:** `http://web-02.bdushime.tech` (`35.179.145.213:80`)  
 * **Demo Video Walkthrough (<= 2 min):** [Watch on YouTube](https://youtu.be/placeholder-demo)  
 * **GitHub Repository:** [https://github.com/bdushime1-beep/lightprint](https://github.com/bdushime1-beep/lightprint)  
 * **Author:** B. Dushime (`b.dushime1@alustudent.com`)

@@ -152,6 +152,9 @@ class LightPrintHandler(SimpleHTTPRequestHandler):
         self.send_response(200)
         self.end_headers()
 
+    def do_HEAD(self):
+        self.do_GET()
+
     def send_json(self, status_code, body):
         payload = json.dumps(body).encode("utf-8")
         self.send_response(status_code)
