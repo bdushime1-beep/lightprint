@@ -3,190 +3,196 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LightPrint — Terms of Service Unmasked</title>
-  <meta name="description" content="Shining light on the hidden traps, privacy gotchas, and data tracking in Terms of Service agreements.">
+  <title>LIGHTPRINT // Terms of Service Legal Audit</title>
+  <meta name="description" content="Independent legal intelligence dispatch unmasking corporate terms of service, forced arbitration, and predatory tracking.">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <a href="#main-content" class="skip-link">Skip to main content [Enter]</a>
 
-  <header class="site-header">
-    <div class="header-inner container">
-      <div class="brand">
-        <span class="brand-icon">🔦</span>
-        <div>
-          <h1 class="brand-title">LightPrint</h1>
-          <p class="brand-subtitle">Terms of Service Unmasked</p>
-        </div>
+  <!-- Masthead -->
+  <header class="site-masthead">
+    <div class="container">
+      <div class="masthead-meta-top">
+        <span>PUBLIC DISPATCH // REGISTRY NO. 2026-API</span>
+        <span id="currentDate">VOL. I</span>
+        <span>WATCHDOG INITIATIVE</span>
       </div>
 
-      <div class="header-actions">
-        <span id="nodeBadge" class="node-badge" title="Active application server node">
-          <span class="status-dot"></span> Node: <strong id="nodeName">Checking...</strong>
-        </span>
-        <button id="themeToggle" class="btn-secondary" aria-label="Toggle dark/light theme">
-          <span id="themeIcon">🌙</span> <span id="themeLabel">Dark</span>
-        </button>
+      <div class="masthead-inner">
+        <div>
+          <h1 class="publication-title">LIGHTPRINT</h1>
+          <p class="publication-subtitle">INDEPENDENT LEGAL AUDIT OF DIGITAL TERMS & PRIVACY POLICIES</p>
+        </div>
+
+        <div class="header-controls">
+          <div class="node-stamp" title="Connected application server node">
+            SYS_NODE: <strong id="nodeName">CONNECTING...</strong>
+          </div>
+          <button type="button" id="themeToggle" class="btn-toggle" aria-label="Toggle visual contrast theme">
+            [<span id="themeLabel">THEME: DARK</span>]
+          </button>
+        </div>
       </div>
     </div>
   </header>
 
   <main id="main-content" class="container">
-    <!-- Hero / Intro -->
-    <section class="hero-section">
-      <h2 class="hero-title">Stop blindly clicking <span class="highlight">"I Agree"</span>.</h2>
-      <p class="hero-desc">
-        Fine print hides the traps in microscopic shadows. LightPrint pulls data from the public 
-        <strong>ToS;DR API</strong> to expose invasive tracking, forced arbitration, and copyright grabs before you sign your rights away.
+    <!-- Dispatch Lead / Hero -->
+    <section class="dispatch-hero">
+      <p class="hero-lead-in">SPECIAL INVESTIGATION // DATA SOVEREIGNTY</p>
+      <h2 class="hero-headline">The 50-Page Fine Print Is Engineered to Be Signed, Never Read.</h2>
+      <p class="hero-abstract">
+        Corporate legal departments intentionally draft agreements exceeding 20,000 words to obscure binding arbitration clauses, 
+        perpetual copyright licenses, and advertising surveillance. LightPrint pulls verified audits from the public 
+        <strong>ToS;DR REST API</strong> to illuminate predatory contracts.
       </p>
 
-      <!-- Search Bar -->
-      <form id="searchForm" class="search-form" role="search" onsubmit="return false;">
-        <label for="searchInput" class="sr-only">Search app or service name</label>
-        <div class="search-box">
-          <span class="search-icon">🔍</span>
+      <!-- Archival Search Box -->
+      <form id="searchForm" role="search" onsubmit="return false;">
+        <label for="searchInput" class="sr-only">Query company or platform database</label>
+        <div class="catalog-search-wrap">
           <input 
             type="text" 
             id="searchInput" 
-            placeholder="Search service (e.g. YouTube, Spotify, Reddit, Steam, Discord)..." 
+            class="search-field"
+            placeholder="Search platform index (e.g., YouTube, Spotify, Reddit, Steam, Discord)..."
             autocomplete="off"
             spellcheck="false"
           >
-          <button type="button" id="clearBtn" class="clear-btn" aria-label="Clear search" hidden>✕</button>
-          <button type="submit" id="searchBtn" class="btn-primary">Search</button>
+          <button type="button" id="clearBtn" class="btn-clear" aria-label="Clear current query" hidden>[CLEAR]</button>
+          <button type="submit" id="searchBtn" class="btn-search">Search Database</button>
         </div>
       </form>
 
-      <!-- Quick Pills -->
-      <div class="quick-pills" aria-label="Popular searches">
-        <span class="pills-label">Quick check:</span>
-        <button type="button" class="pill-btn" data-query="YouTube">YouTube</button>
-        <button type="button" class="pill-btn" data-query="Spotify">Spotify</button>
-        <button type="button" class="pill-btn" data-query="Reddit">Reddit</button>
-        <button type="button" class="pill-btn" data-query="Discord">Discord</button>
-        <button type="button" class="pill-btn" data-query="Steam">Steam</button>
-        <button type="button" class="pill-btn" data-query="ChatGPT">ChatGPT</button>
-        <button type="button" class="pill-btn" data-query="TikTok">TikTok</button>
+      <!-- Quick Index Shortcuts -->
+      <div class="index-shortcuts" aria-label="Index references">
+        <span class="index-label">Index References:</span>
+        <button type="button" class="shortcut-tag" data-query="YouTube">[ YouTube ]</button>
+        <button type="button" class="shortcut-tag" data-query="Spotify">[ Spotify ]</button>
+        <button type="button" class="shortcut-tag" data-query="Reddit">[ Reddit ]</button>
+        <button type="button" class="shortcut-tag" data-query="Discord">[ Discord ]</button>
+        <button type="button" class="shortcut-tag" data-query="Steam">[ Steam ]</button>
+        <button type="button" class="shortcut-tag" data-query="RiseUp">[ RiseUp ]</button>
+        <button type="button" class="shortcut-tag" data-query="DuckDuckGo">[ DuckDuckGo ]</button>
       </div>
     </section>
 
-    <!-- Status / Notification Banner -->
-    <div id="statusBanner" class="status-banner" role="status" aria-live="polite" hidden></div>
+    <!-- Status / Notification -->
+    <div id="statusBanner" class="audit-banner" role="status" aria-live="polite" hidden></div>
 
-    <!-- Filter and Sort Toolbar -->
-    <section class="toolbar-section">
-      <div class="toolbar-left">
-        <span class="toolbar-label">Grade Filter:</span>
-        <div class="filter-chips" role="group" aria-label="Filter by privacy grade">
-          <button type="button" class="chip active" data-grade="ALL">All</button>
-          <button type="button" class="chip grade-a" data-grade="A">Grade A</button>
-          <button type="button" class="chip grade-b" data-grade="B">Grade B</button>
-          <button type="button" class="chip grade-c" data-grade="C">Grade C</button>
-          <button type="button" class="chip grade-d" data-grade="D">Grade D</button>
-          <button type="button" class="chip grade-e" data-grade="E">Grade E (Worst)</button>
-        </div>
+    <!-- Toolbar: Filters and Sorting -->
+    <section class="audit-toolbar">
+      <div class="filter-group" role="group" aria-label="Filter dossiers by grade">
+        <span class="toolbar-heading">Classification:</span>
+        <button type="button" class="filter-btn active" data-grade="ALL">[ ALL ]</button>
+        <button type="button" class="filter-btn" data-grade="A">[ GRADE A ]</button>
+        <button type="button" class="filter-btn" data-grade="B">[ GRADE B ]</button>
+        <button type="button" class="filter-btn" data-grade="C">[ GRADE C ]</button>
+        <button type="button" class="filter-btn" data-grade="D">[ GRADE D ]</button>
+        <button type="button" class="filter-btn" data-grade="E">[ GRADE E : PREDATORY ]</button>
       </div>
 
-      <div class="toolbar-right">
-        <label for="sortSelect" class="sr-only">Sort results</label>
-        <select id="sortSelect" class="sort-select">
-          <option value="worst-first">Worst Privacy First (E → A)</option>
-          <option value="best-first">Best Privacy First (A → E)</option>
-          <option value="name-az">Name (A to Z)</option>
+      <div>
+        <label for="sortSelect" class="sr-only">Sort dossiers</label>
+        <select id="sortSelect" class="sort-dropdown">
+          <option value="worst-first">SORT: WORST PRIVACY FIRST (E → A)</option>
+          <option value="best-first">SORT: BEST PRIVACY FIRST (A → E)</option>
+          <option value="name-az">SORT: ALPHABETICAL (A → Z)</option>
         </select>
       </div>
     </section>
 
-    <!-- Services Grid -->
-    <section class="results-section">
-      <div class="results-header">
-        <h3 id="resultsTitle" class="section-title">Featured Services</h3>
-        <span id="resultsCount" class="results-count">Loading initial services...</span>
+    <!-- Catalog Results Section -->
+    <section>
+      <div class="dossier-meta-row">
+        <h3 id="resultsTitle" style="font-size: 1.15rem; font-weight: 800; text-transform: uppercase;">AUDIT DOSSIERS</h3>
+        <span id="resultsCount" class="meta-count">CATALOGING RECORDS...</span>
       </div>
 
-      <div id="servicesGrid" class="services-grid" aria-live="polite">
-        <!-- Dynamic cards injected via app.js -->
+      <div id="servicesGrid" class="dossier-grid" aria-live="polite">
+        <!-- Injected via app.js -->
       </div>
     </section>
 
-    <!-- Interactive Clause Scanner (Custom Text Analysis) -->
-    <section class="scanner-section">
-      <div class="scanner-card">
-        <div class="scanner-header">
-          <div>
-            <h3 class="scanner-title">Live Clause Scanner <span class="badge-mini">Regex Engine</span></h3>
-            <p class="scanner-desc">
-              Evaluating an obscure campus lease or a niche app not yet in the ToS;DR database? 
-              Paste a contract excerpt below to detect common predatory clauses.
-            </p>
-          </div>
-        </div>
+    <!-- Contract Redaction & Scanner Terminal -->
+    <section class="scanner-dossier">
+      <div class="terminal-header">
+        <p class="terminal-label">HEURISTIC PARSING PROTOCOL // REGEX CLASSIFIER</p>
+        <h3 class="terminal-title">Unlisted Contract & Lease Clause Scanner</h3>
+        <p style="font-size: 0.95rem; color: var(--text-muted); margin-top: 0.35rem;">
+          Evaluating an unindexed campus housing lease, employment agreement, or niche mobile app? 
+          Paste a contract excerpt below to detect high-risk legal traps.
+        </p>
+      </div>
 
-        <div class="scanner-presets">
-          <span>Try a sample:</span>
-          <button type="button" class="preset-btn" data-preset="arbitration">Forced Arbitration</button>
-          <button type="button" class="preset-btn" data-preset="unilateral">Change Without Notice</button>
-          <button type="button" class="preset-btn" data-preset="copyright">Perpetual Content Rights</button>
-          <button type="button" class="preset-btn" data-preset="sharing">Data Sharing with Third Parties</button>
-        </div>
+      <div class="terminal-presets">
+        <span style="color: var(--text-faint);">Insert Verified Sample:</span>
+        <button type="button" class="btn-sample" data-preset="arbitration">[ Forced Arbitration Waiver ]</button>
+        <button type="button" class="btn-sample" data-preset="unilateral">[ Unilateral Alteration Without Notice ]</button>
+        <button type="button" class="btn-sample" data-preset="copyright">[ Perpetual Content License ]</button>
+        <button type="button" class="btn-sample" data-preset="sharing">[ Third-Party Data Sale ]</button>
+      </div>
 
-        <div class="scanner-form">
-          <label for="scannerInput" class="sr-only">Contract text to analyze</label>
-          <textarea 
-            id="scannerInput" 
-            rows="4" 
-            placeholder="Paste contract terms or fine print paragraph here..."
-          ></textarea>
+      <div>
+        <label for="scannerInput" class="sr-only">Raw agreement text to scan</label>
+        <textarea 
+          id="scannerInput" 
+          class="typewriter-textarea" 
+          rows="5" 
+          placeholder="// Paste fine print clause, terms excerpt, or agreement paragraph here..."
+        ></textarea>
 
-          <div class="scanner-actions">
-            <button type="button" id="scanBtn" class="btn-primary">Scan For Traps</button>
-            <button type="button" id="clearScannerBtn" class="btn-secondary">Clear</button>
-          </div>
+        <div class="terminal-actions">
+          <button type="button" id="scanBtn" class="btn-execute">Execute Audit</button>
+          <button type="button" id="clearScannerBtn" class="btn-reset">Clear Buffer</button>
         </div>
+      </div>
 
-        <div id="scannerResults" class="scanner-results" hidden>
-          <!-- Injected via app.js -->
-        </div>
+      <div id="scannerResults" class="audit-verdict" hidden>
+        <!-- Injected via app.js -->
       </div>
     </section>
   </main>
 
-  <!-- Detailed Service Modal / Drawer -->
-  <div id="detailModal" class="modal-backdrop" hidden role="dialog" aria-modal="true" aria-labelledby="modalServiceName">
-    <div class="modal-dialog">
-      <div class="modal-header">
+  <!-- Dossier Inspection Docket Modal -->
+  <div id="detailModal" class="docket-backdrop" hidden role="dialog" aria-modal="true" aria-labelledby="modalServiceName">
+    <div class="docket-window">
+      <div class="docket-header">
         <div>
-          <span id="modalGradeBadge" class="grade-pill">Grade -</span>
-          <h2 id="modalServiceName" class="modal-title">Service Details</h2>
-          <p id="modalServiceUrls" class="modal-meta"></p>
+          <p id="modalServiceUrls" class="docket-docket-no">DOSSIER REF: #0000</p>
+          <h2 id="modalServiceName" class="docket-title">Service Title</h2>
         </div>
-        <button type="button" id="closeModalBtn" class="close-btn" aria-label="Close dialog">✕</button>
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <span id="modalGradeBadge" class="grade-stamp">GRADE -</span>
+          <button type="button" id="closeModalBtn" class="btn-close-docket" aria-label="Close docket">[✕]</button>
+        </div>
       </div>
 
-      <div class="modal-body">
-        <div class="modal-tabs">
-          <button type="button" class="tab-btn active" data-tab="all">All Clauses (<span id="countAll">0</span>)</button>
-          <button type="button" class="tab-btn tab-bad" data-tab="bad">Red Flags (<span id="countBad">0</span>)</button>
-          <button type="button" class="tab-btn tab-neutral" data-tab="neutral">Neutral (<span id="countNeutral">0</span>)</button>
-          <button type="button" class="tab-btn tab-good" data-tab="good">Good (<span id="countGood">0</span>)</button>
+      <div class="docket-body">
+        <div class="docket-filter-tabs">
+          <button type="button" class="docket-tab active" data-tab="all">[ ALL CLAUSES (<span id="countAll">0</span>) ]</button>
+          <button type="button" class="docket-tab" data-tab="bad">[ RED FLAGS (<span id="countBad">0</span>) ]</button>
+          <button type="button" class="docket-tab" data-tab="neutral">[ NEUTRAL (<span id="countNeutral">0</span>) ]</button>
+          <button type="button" class="docket-tab" data-tab="good">[ EXEMPLARY (<span id="countGood">0</span>) ]</button>
         </div>
 
-        <div id="modalPointsList" class="points-list">
+        <div id="modalPointsList">
           <!-- Injected via app.js -->
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Footer -->
-  <footer class="site-footer">
-    <div class="container footer-inner">
+  <!-- Colophon / Footer -->
+  <footer class="site-colophon">
+    <div class="container">
       <p>
-        <strong>LightPrint</strong> — A distributed web application built for the <em>Playing Around with APIs</em> assignment.
+        <strong>LIGHTPRINT</strong> // A Distributed Systems Exercise in API Orchestration & Public Intelligence.
       </p>
-      <p class="footer-meta">
-        Architecture: <strong>Web01</strong> & <strong>Web02</strong> balanced behind <strong>Lb01</strong> | 
-        API Data: <a href="https://tosdr.org" target="_blank" rel="noopener">ToS;DR (Terms of Service; Didn't Read)</a> | 
+      <p style="margin-top: 0.4rem; color: var(--text-faint);">
+        Multi-Tier Cluster: <strong>Web01</strong> & <strong>Web02</strong> Load Balanced by <strong>Lb01</strong> | 
+        Data Source: <a href="https://tosdr.org" target="_blank" rel="noopener">ToS;DR Open API</a> | 
         Author: B. Dushime (<a href="mailto:b.dushime1@alustudent.com">b.dushime1@alustudent.com</a>)
       </p>
     </div>

@@ -5,16 +5,76 @@ import time
 import urllib.request
 import urllib.parse
 import urllib.error
-from http.server import HTTPServer, SimpleHTTPRequestHandler
+from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 
 PORT = int(os.environ.get("PORT", 3000))
 SERVER_NODE_ID = os.environ.get("SERVER_NODE_ID", "Web01")
-CACHE_TTL = 600  # 10 min cache to shield against ToS;DR 5 req/10s rate limit
+CACHE_TTL = 600
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PUBLIC_DIR = os.path.join(BASE_DIR, "public")
 
 cache_store = {}
+
+# Pre-seeded popular platforms for instant zero-latency loading
+SEED_SERVICES = [
+    {
+        "id": "225",
+        "name": "Spotify",
+        "rating": {"human": "E", "letter": "E", "hex": "#dc3545"},
+        "urls": ["spotify.com"],
+        "is_comprehensively_reviewed": True,
+        "summary": "Tracks users across apps and involves many advertising third parties."
+    },
+    {
+        "id": "274",
+        "name": "YouTube",
+        "rating": {"human": "E", "letter": "E", "hex": "#dc3545"},
+        "urls": ["youtube.com"],
+        "is_comprehensively_reviewed": True,
+        "summary": "Holds perpetual rights to content; tracks viewing habits across Google ecosystem."
+    },
+    {
+        "id": "194",
+        "name": "Reddit",
+        "rating": {"human": "D", "letter": "D", "hex": "#f97316"},
+        "urls": ["reddit.com"],
+        "is_comprehensively_reviewed": True,
+        "summary": "Licenses user posts for commercial AI training; forced arbitration waiver."
+    },
+    {
+        "id": "196",
+        "name": "Discord",
+        "rating": {"human": "D", "letter": "D", "hex": "#f97316"},
+        "urls": ["discord.com"],
+        "is_comprehensively_reviewed": True,
+        "summary": "Can read user messages; reserves right to change terms without direct notice."
+    },
+    {
+        "id": "218",
+        "name": "Steam",
+        "rating": {"human": "C", "letter": "C", "hex": "#eab308"},
+        "urls": ["steampowered.com"],
+        "is_comprehensively_reviewed": True,
+        "summary": "Valve provides standard digital subscription licensing; strict non-transferable games."
+    },
+    {
+        "id": "327",
+        "name": "RiseUp.net",
+        "rating": {"human": "B", "letter": "B", "hex": "#14b8a6"},
+        "urls": ["riseup.net"],
+        "is_comprehensively_reviewed": True,
+        "summary": "Privacy-focused communication service; minimal logging and zero commercial tracking."
+    },
+    {
+        "id": "246",
+        "name": "DuckDuckGo",
+        "rating": {"human": "A", "letter": "A", "hex": "#22c55e"},
+        "urls": ["duckduckgo.com"],
+        "is_comprehensively_reviewed": True,
+        "summary": "Does not collect or share personal information; no search history profiling."
+    }
+]
 
 def fetch_upstream_json(url):
     now = time.time()
@@ -25,24 +85,26 @@ def fetch_upstream_json(url):
 
     req = urllib.request.Request(
         url,
-        headers={"User-Agent": "LightPrint-App/1.0 (Student Project)"}
+        headers={"User-Agent": "LightPrint-Investigative/1.0 (Student Project)"}
     )
-    with urllib.request.urlopen(req, timeout=10) as response:
+    with urllib.request.urlopen(req, timeout=8) as response:
         payload = response.read().decode("utf-8")
         parsed = json.loads(payload)
         cache_store[url] = (now, parsed)
         return parsed, False
 
 class LightPrintHandler(SimpleHTTPRequestHandler):
+    protocol_version = "HTTP/1.1"
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=PUBLIC_DIR, **kwargs)
 
     def end_headers(self):
-        # Attach load balancer proof header and CORS
         self.send_header("X-Server-Node", SERVER_NODE_ID)
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "GET, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.send_header("Connection", "close")
         super().end_headers()
 
     def do_OPTIONS(self):
@@ -64,6 +126,15 @@ class LightPrintHandler(SimpleHTTPRequestHandler):
                 "status": "healthy",
                 "node": SERVER_NODE_ID,
                 "timestamp": time.time()
+            })
+
+        # Pre-seeded featured services for instant cold-start
+        if self.path == "/api/featured":
+            return self.send_json(200, {
+                "source": "pre-seeded",
+                "serverNode": SERVER_NODE_ID,
+                "count": len(SEED_SERVICES),
+                "services": SEED_SERVICES
             })
 
         # Proxy: Search services by keyword
@@ -123,12 +194,13 @@ class LightPrintHandler(SimpleHTTPRequestHandler):
             except Exception as e:
                 return self.send_json(500, {"error": "Internal server error", "details": str(e)})
 
-        # Default: Serve static frontend files from public/
+        # Default: Serve static files from public/
         return super().do_GET()
 
 def run_server():
     server_address = ("", PORT)
-    httpd = HTTPServer(server_address, LightPrintHandler)
+    httpd = ThreadingHTTPServer(server_address, LightPrintHandler)
+    httpd.daemon_threads = True
     print(f"[{SERVER_NODE_ID}] LightPrint server listening on http://localhost:{PORT}")
     try:
         httpd.serve_forever()
