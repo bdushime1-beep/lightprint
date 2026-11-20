@@ -4,7 +4,7 @@
   "assignmentName": "Playing Around with APIs",
   "studentIdentifier": "b.dushime1@alustudent.com",
   "repoUrl": "https://github.com/bdushime1-beep/lightprint.git",
-  "repoHeadCommit": "6e53f7cdd530c481637c2fd71a1cd65ceefdeab1",
+  "repoHeadCommit": "b2720a77bfa7edb13c47264cafbf3386e61d2e96",
   "metrics": {
     "authorship": {
       "totalLines": 1228,
@@ -60,6 +60,6 @@
   "generatedAt": 1795181719620,
   "integrity": {
     "algorithm": "sha256",
-    "hash": "39352433b8464f489465534426efdf11d063253f946e55bba31222b390a46c8f"
+    "hash": "6954b2fa062750fc607cd326d7d41a55c0cb98613a1b0f73e56d94d260789af4"
   }
 }
