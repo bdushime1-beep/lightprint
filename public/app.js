@@ -1,6 +1,6 @@
 // ==========================================================================
 // LightPrint — Precision Dashboard Controller
-// Architecture: Vanilla ES6 / DOM Management / Regex Engine / Theme Control
+// Architecture: Vanilla ES6 / DOM Management / Heuristic Scanner / Theme Control
 // ==========================================================================
 
 const state = {
@@ -32,9 +32,10 @@ const statusBanner = document.getElementById("statusBanner");
 const sortSelect = document.getElementById("sortSelect");
 const filterTabs = document.querySelectorAll(".filter-tab");
 const nodeNameEl = document.getElementById("nodeName");
-const themeToggle = document.getElementById("themeToggle");
-const themeIcon = document.getElementById("themeIcon");
-const themeLabel = document.getElementById("themeLabel");
+
+// Segmented Theme Switch
+const btnThemeLight = document.getElementById("btnThemeLight");
+const btnThemeDark = document.getElementById("btnThemeDark");
 
 // Modal References
 const detailModal = document.getElementById("detailModal");
@@ -142,9 +143,12 @@ function setupEventListeners() {
     });
   }
 
-  // Theme toggle
-  if (themeToggle) {
-    themeToggle.addEventListener("click", toggleTheme);
+  // Theme switch listeners
+  if (btnThemeLight) {
+    btnThemeLight.addEventListener("click", () => setTheme("light"));
+  }
+  if (btnThemeDark) {
+    btnThemeDark.addEventListener("click", () => setTheme("dark"));
   }
 
   // Modal interactions
@@ -157,7 +161,7 @@ function setupEventListeners() {
     });
   }
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && detailModal && !detailModal.hidden) {
+    if (e.key === "Escape" && detailModal && detailModal.style.display !== "none") {
       closeModal();
     }
   });
@@ -195,46 +199,38 @@ function setupEventListeners() {
 }
 
 // --------------------------------------------------------------------------
-// Theme Manager (Dark / Light)
+// Theme Manager (Segmented Light / Dark)
 // --------------------------------------------------------------------------
 function initTheme() {
-  const saved = localStorage.getItem("lightprint_theme") || "light";
-  document.documentElement.setAttribute("data-theme", saved);
-  updateThemeUi(saved);
+  let saved = "light";
+  try {
+    saved = localStorage.getItem("lightprint_theme") || "light";
+  } catch(e) {}
+  setTheme(saved, false);
 }
 
-function toggleTheme() {
-  const current = document.documentElement.getAttribute("data-theme") || "light";
-  const next = current === "light" ? "dark" : "light";
-  document.documentElement.setAttribute("data-theme", next);
-  localStorage.setItem("lightprint_theme", next);
-  updateThemeUi(next);
-}
+function setTheme(theme, persist = true) {
+  const chosen = (theme === "dark") ? "dark" : "light";
+  document.documentElement.setAttribute("data-theme", chosen);
+  
+  if (persist) {
+    try {
+      localStorage.setItem("lightprint_theme", chosen);
+    } catch(e) {}
+  }
 
-function updateThemeUi(theme) {
-  if (!themeLabel || !themeIcon) return;
-  if (theme === "dark") {
-    themeLabel.textContent = "Light";
-    themeIcon.innerHTML = `
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="5"/>
-        <line x1="12" y1="1" x2="12" y2="3"/>
-        <line x1="12" y1="21" x2="12" y2="23"/>
-        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-        <line x1="1" y1="12" x2="3" y2="12"/>
-        <line x1="21" y1="12" x2="23" y2="12"/>
-        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-      </svg>
-    `;
-  } else {
-    themeLabel.textContent = "Dark";
-    themeIcon.innerHTML = `
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-      </svg>
-    `;
+  if (btnThemeLight && btnThemeDark) {
+    if (chosen === "light") {
+      btnThemeLight.classList.add("active");
+      btnThemeLight.setAttribute("aria-pressed", "true");
+      btnThemeDark.classList.remove("active");
+      btnThemeDark.setAttribute("aria-pressed", "false");
+    } else {
+      btnThemeDark.classList.add("active");
+      btnThemeDark.setAttribute("aria-pressed", "true");
+      btnThemeLight.classList.remove("active");
+      btnThemeLight.setAttribute("aria-pressed", "false");
+    }
   }
 }
 
@@ -243,7 +239,7 @@ function updateThemeUi(theme) {
 // --------------------------------------------------------------------------
 async function performSearch(query) {
   showStatusBar(`Searching database for "${query}"...`, "info");
-  if (resultsCount) resultsCount.textContent = "Querying...";
+  if (resultsCount) resultsCount.textContent = "QUERYING...";
 
   try {
     const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
@@ -257,17 +253,17 @@ async function performSearch(query) {
     const data = await res.json();
     state.services = data.services || [];
     hideStatusBar();
-    if (resultsTitle) resultsTitle.textContent = `Search Results: "${query}"`;
+    if (resultsTitle) resultsTitle.textContent = `SEARCH: "${query.toUpperCase()}"`;
     renderTable();
   } catch (err) {
     showStatusBar(`Search failed: ${err.message}`, "error");
-    if (resultsCount) resultsCount.textContent = "Communication error";
+    if (resultsCount) resultsCount.textContent = "ERROR";
   }
 }
 
 async function loadInitialServices() {
-  if (resultsTitle) resultsTitle.textContent = "Platform Audits";
-  if (resultsCount) resultsCount.textContent = "Loading...";
+  if (resultsTitle) resultsTitle.textContent = "PLATFORM DOSSIERS";
+  if (resultsCount) resultsCount.textContent = "LOADING...";
 
   try {
     const res = await fetch("/api/featured");
@@ -328,13 +324,13 @@ function renderTable() {
   }
 
   if (resultsCount) {
-    resultsCount.textContent = `${list.length} item${list.length === 1 ? "" : "s"}`;
+    resultsCount.textContent = `${list.length} ITEM${list.length === 1 ? "" : "S"}`;
   }
 
   if (list.length === 0) {
     servicesTableBody.innerHTML = `
       <tr>
-        <td colspan="5" style="text-align: center; padding: 2.5rem 1rem; color: var(--text-muted); font-family: var(--font-mono); font-size: 0.82rem;">
+        <td colspan="5" style="text-align: center; padding: 2.5rem 1rem; color: var(--text-muted); font-family: var(--font-mono); font-size: 0.8rem;">
           // NO RECORDS FOUND MATCHING SELECTED FILTER
         </td>
       </tr>
@@ -361,22 +357,25 @@ function renderTable() {
         </td>
         <td>
           <span class="stamp-grade grade-${grade.replace("/", "")}">
-            Grade ${grade}
+            GRADE ${grade}
           </span>
         </td>
         <td>
-          <span style="font-size: 0.78rem; font-family: var(--font-mono); font-weight: 600; color: var(--text-muted);">
+          <span style="font-size: 0.74rem; font-family: var(--font-mono); font-weight: 700; color: var(--text-muted);">
             ${svc.is_comprehensively_reviewed ? "AUDITED" : "MONITORED"}
           </span>
         </td>
         <td style="max-width: 380px;">
-          <span style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.4; display: block;">
+          <span style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; display: block;">
             ${escapeHtml(summary)}
           </span>
         </td>
         <td style="text-align: right;">
           <button type="button" class="btn-inspect-sharp" onclick="inspectService('${svc.id}')">
-            Inspect Fine Print →
+            <span>INSPECT</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square">
+              <path d="M7 17L17 7M17 7H7M17 7V17"/>
+            </svg>
           </button>
         </td>
       </tr>
@@ -400,7 +399,7 @@ window.inspectService = async function(serviceId) {
     modalServiceUrls.textContent = `DOSSIER #${fullData.id || serviceId} // ${(fullData.urls && fullData.urls.length) ? fullData.urls.join(", ") : "NO DOMAIN RECORDED"}`;
   }
   if (modalGradeBadge) {
-    modalGradeBadge.textContent = `Grade ${grade}`;
+    modalGradeBadge.textContent = `GRADE ${grade}`;
     modalGradeBadge.className = `stamp-grade grade-${grade.replace("/", "")}`;
   }
 
@@ -440,7 +439,7 @@ function renderModalPoints() {
   }
 
   if (filtered.length === 0) {
-    modalPointsList.innerHTML = `<p style="font-family: var(--font-mono); font-size: 0.8rem; text-align: center; color: var(--text-faint); padding: 2rem 0;">// NO RECORDED CLAUSES UNDER THIS TAB</p>`;
+    modalPointsList.innerHTML = `<p style="font-family: var(--font-mono); font-size: 0.78rem; text-align: center; color: var(--text-faint); padding: 2rem 0;">// NO RECORDED CLAUSES UNDER THIS FILTER</p>`;
     return;
   }
 
@@ -454,8 +453,8 @@ function renderModalPoints() {
       <div class="clause-card-sharp ${classification}">
         <div class="clause-title-sharp">
           <span>${escapeHtml(caseTitle)}</span>
-          <span class="stamp-grade grade-${classification === 'bad' || classification === 'blocker' ? 'E' : classification === 'good' ? 'A' : 'NA'}" style="font-size: 0.68rem; padding: 0.1rem 0.4rem;">
-            ${classification}
+          <span class="stamp-grade grade-${classification === 'bad' || classification === 'blocker' ? 'E' : classification === 'good' ? 'A' : 'NA'}" style="font-size: 0.68rem; padding: 0.1rem 0.35rem;">
+            ${classification.toUpperCase()}
           </span>
         </div>
         ${caseDesc ? `<p class="clause-desc-sharp">${escapeHtml(caseDesc)}</p>` : ""}
@@ -472,6 +471,7 @@ function closeModal() {
   }
   document.body.style.overflow = "";
 }
+window.closeModal = closeModal;
 
 // --------------------------------------------------------------------------
 // Clause Scanner (Regex Engine)
@@ -529,23 +529,23 @@ function runClauseScanner() {
     const isDanger = matched.some(m => m.severity === "danger");
     scannerResults.className = `verdict-alert ${isDanger ? "danger" : "warning"}`;
     scannerResults.innerHTML = `
-      <p style="font-weight: 800; font-family: var(--font-mono); font-size: 0.85rem; margin-bottom: 0.4rem; text-transform: uppercase;">
+      <p style="font-weight: 800; font-family: var(--font-mono); font-size: 0.82rem; margin-bottom: 0.4rem; text-transform: uppercase;">
         // VERDICT: ${matched.length} PREDATORY LEGAL TRAP(S) IDENTIFIED
       </p>
-      <div style="margin-bottom: 0.6rem;">
+      <div style="margin-bottom: 0.5rem;">
         ${matched.map(m => `<span class="tag-redacted">${m.name}</span>`).join("")}
       </div>
-      <ul style="list-style-type: square; margin-left: 1.25rem; font-size: 0.8rem; line-height: 1.5;">
-        ${matched.map(m => `<li style="margin-bottom: 0.25rem;"><strong>${m.name}:</strong> ${m.desc}</li>`).join("")}
+      <ul style="list-style-type: square; margin-left: 1.25rem; font-size: 0.78rem; line-height: 1.5;">
+        ${matched.map(m => `<li style="margin-bottom: 0.2rem;"><strong>${m.name}:</strong> ${m.desc}</li>`).join("")}
       </ul>
     `;
   } else {
     scannerResults.className = "verdict-alert clean";
     scannerResults.innerHTML = `
-      <p style="font-weight: 800; font-family: var(--font-mono); font-size: 0.85rem; text-transform: uppercase;">
+      <p style="font-weight: 800; font-family: var(--font-mono); font-size: 0.82rem; text-transform: uppercase;">
         // AUDIT PASSED: ZERO MATCHING PREDATORY TRAPS DETECTED
       </p>
-      <p style="font-size: 0.8rem; margin-top: 0.2rem;">
+      <p style="font-size: 0.78rem; margin-top: 0.2rem;">
         Supplied text contains no regex signatures for forced arbitration, copyright forfeiture, or unilateral change clauses.
       </p>
     `;
