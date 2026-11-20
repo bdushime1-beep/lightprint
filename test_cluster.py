@@ -491,35 +491,53 @@ def test_local_server():
     score = 0
     total = 0
 
-    endpoints = [
-        ("/", "Root Single-Page Application", "text/html"),
-        ("/style.css", "Precision CSS Stylesheet (0px geometry)", "text/css"),
-        ("/app.js", "Frontend Logic & Scanner Engine", "javascript"),
-        ("/api/featured", "Pre-Seeded 12 Platform Directory", "application/json"),
-        ("/api/search?q=google", "Platform Search API Filter", "application/json"),
-        ("/api/service?id=242", "Detailed Platform Clauses Dossier", "application/json"),
-        ("/health", "Instance Health & Heartbeat API", "application/json")
-    ]
+    # Auto-start local server.py if not already running on port 3000
+    local_proc = None
+    try:
+        with socket.create_connection(("127.0.0.1", 3000), timeout=0.5):
+            pass
+    except Exception:
+        server_script = os.path.join(os.path.dirname(os.path.abspath(__file__)), "server.py")
+        local_proc = subprocess.Popen([sys.executable, server_script], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        time.sleep(1.5)
 
-    for path, desc, expected_mime in endpoints:
-        total += 1
-        url = f"http://127.0.0.1:3000{path}"
-        try:
-            t0 = time.time()
-            req = urllib.request.Request(url, headers={"User-Agent": "LightPrint-Auditor/2.0"})
-            with urllib.request.urlopen(req, timeout=5) as resp:
-                elapsed = int((time.time() - t0) * 1000)
-                status = resp.status
-                ct = resp.headers.get("Content-Type", "")
-                node = resp.headers.get("X-Server-Node", "local")
-                content = resp.read()
-                size_kb = len(content) / 1024
+    try:
+        endpoints = [
+            ("/", "Root Single-Page Application", "text/html"),
+            ("/style.css", "Precision CSS Stylesheet (0px geometry)", "text/css"),
+            ("/app.js", "Frontend Logic & Scanner Engine", "javascript"),
+            ("/api/featured", "Pre-Seeded 12 Platform Directory", "application/json"),
+            ("/api/search?q=google", "Platform Search API Filter", "application/json"),
+            ("/api/service?id=242", "Detailed Platform Clauses Dossier", "application/json"),
+            ("/health", "Instance Health & Heartbeat API", "application/json")
+        ]
 
-                detail = f"Status: {status}, Size: {size_kb:.1f} KB, Latency: {elapsed}ms, Node: {node}"
-                ok = (status == 200 and expected_mime.lower() in ct.lower())
-                score += pass_fail(ok, f"Local {desc:36} ({path})", detail)
-        except Exception as e:
-            pass_fail(False, f"Local {desc:36} ({path})", f"Error: {e}")
+        for path, desc, expected_mime in endpoints:
+            total += 1
+            url = f"http://127.0.0.1:3000{path}"
+            try:
+                t0 = time.time()
+                req = urllib.request.Request(url, headers={"User-Agent": "LightPrint-Auditor/2.0"})
+                with urllib.request.urlopen(req, timeout=5) as resp:
+                    elapsed = int((time.time() - t0) * 1000)
+                    status = resp.status
+                    ct = resp.headers.get("Content-Type", "")
+                    node = resp.headers.get("X-Server-Node", "local")
+                    content = resp.read()
+                    size_kb = len(content) / 1024
+
+                    detail = f"Status: {status}, Size: {size_kb:.1f} KB, Latency: {elapsed}ms, Node: {node}"
+                    ok = (status == 200 and expected_mime.lower() in ct.lower())
+                    score += pass_fail(ok, f"Local {desc:36} ({path})", detail)
+            except Exception as e:
+                pass_fail(False, f"Local {desc:36} ({path})", f"Error: {e}")
+    finally:
+        if local_proc:
+            try:
+                local_proc.terminate()
+                local_proc.wait(timeout=2)
+            except Exception:
+                pass
 
     return score, total
 
