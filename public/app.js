@@ -1,6 +1,6 @@
 // ==========================================================================
-// LightPrint — Frontend Dashboard Engine (Ref: Clean Modern Dashboard)
-// Architecture: Vanilla ES6 Modules / Table Rendering / Heuristic Scanner
+// LightPrint — Precision Dashboard Controller
+// Architecture: Vanilla ES6 / DOM Management / Regex Engine / Theme Control
 // ==========================================================================
 
 const state = {
@@ -12,7 +12,7 @@ const state = {
   searchDebounceTimer: null
 };
 
-// Preset sample excerpts for the live clause scanner
+// Preset sample excerpts for live clause scanner
 const PRESET_SNIPPETS = {
   arbitration: "You and the Company agree that any dispute, claim, or controversy arising out of or relating to these Terms shall be settled by binding arbitration on an individual basis, and you waive any right to bring or participate in a class action lawsuit.",
   unilateral: "We reserve the right, at our sole discretion, to modify, replace, or update these Terms of Service at any time without prior notice to you. Your continued use of the platform constitutes acceptance of all revised terms.",
@@ -30,7 +30,7 @@ const resultsCount = document.getElementById("resultsCount");
 const resultsTitle = document.getElementById("resultsTitle");
 const statusBanner = document.getElementById("statusBanner");
 const sortSelect = document.getElementById("sortSelect");
-const gradeTabButtons = document.querySelectorAll(".grade-tab-btn");
+const filterTabs = document.querySelectorAll(".filter-tab");
 const nodeNameEl = document.getElementById("nodeName");
 const themeToggle = document.getElementById("themeToggle");
 const themeIcon = document.getElementById("themeIcon");
@@ -43,7 +43,7 @@ const modalServiceName = document.getElementById("modalServiceName");
 const modalServiceUrls = document.getElementById("modalServiceUrls");
 const modalGradeBadge = document.getElementById("modalGradeBadge");
 const modalPointsList = document.getElementById("modalPointsList");
-const modalTabs = document.querySelectorAll(".modal-tab-pill");
+const modalTabs = document.querySelectorAll(".modal-tab-sharp");
 const countAll = document.getElementById("countAll");
 const countBad = document.getElementById("countBad");
 const countNeutral = document.getElementById("countNeutral");
@@ -54,35 +54,34 @@ const scannerInput = document.getElementById("scannerInput");
 const scanBtn = document.getElementById("scanBtn");
 const clearScannerBtn = document.getElementById("clearScannerBtn");
 const scannerResults = document.getElementById("scannerResults");
-const presetButtons = document.querySelectorAll(".preset-tag-btn");
+const presetButtons = document.querySelectorAll(".preset-pill-btn");
 
 // --------------------------------------------------------------------------
 // Initialization
 // --------------------------------------------------------------------------
 document.addEventListener("DOMContentLoaded", () => {
-  // Ensure modal is completely closed on initial boot
+  initTheme();
   closeModal();
-
   setupEventListeners();
   loadInitialServices();
 });
 
 function setupEventListeners() {
-  // Global search input in topbar
+  // Global search input
   if (globalSearchInput) {
     globalSearchInput.addEventListener("input", (e) => {
       const val = e.target.value.trim();
       if (searchInput) searchInput.value = val;
       clearTimeout(state.searchDebounceTimer);
       if (val.length >= 2) {
-        state.searchDebounceTimer = setTimeout(() => performSearch(val), 300);
+        state.searchDebounceTimer = setTimeout(() => performSearch(val), 280);
       } else if (val.length === 0) {
         loadInitialServices();
       }
     });
   }
 
-  // Main banner search input
+  // Card search input
   if (searchInput) {
     searchInput.addEventListener("input", (e) => {
       const val = e.target.value.trim();
@@ -90,7 +89,7 @@ function setupEventListeners() {
       if (clearBtn) clearBtn.hidden = val.length === 0;
       clearTimeout(state.searchDebounceTimer);
       if (val.length >= 2) {
-        state.searchDebounceTimer = setTimeout(() => performSearch(val), 300);
+        state.searchDebounceTimer = setTimeout(() => performSearch(val), 280);
       } else if (val.length === 0) {
         loadInitialServices();
       }
@@ -114,8 +113,8 @@ function setupEventListeners() {
     });
   }
 
-  // Quick chips
-  document.querySelectorAll(".chip-pill").forEach((btn) => {
+  // Index chips
+  document.querySelectorAll(".chip-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       const q = btn.dataset.query;
       if (searchInput) searchInput.value = q;
@@ -126,16 +125,16 @@ function setupEventListeners() {
   });
 
   // Grade filter tabs
-  gradeTabButtons.forEach((btn) => {
+  filterTabs.forEach((btn) => {
     btn.addEventListener("click", () => {
-      gradeTabButtons.forEach((b) => b.classList.remove("active"));
+      filterTabs.forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
       state.activeGrade = btn.dataset.grade;
       renderTable();
     });
   });
 
-  // Sort selector
+  // Sorting
   if (sortSelect) {
     sortSelect.addEventListener("change", (e) => {
       state.sortMode = e.target.value;
@@ -196,10 +195,54 @@ function setupEventListeners() {
 }
 
 // --------------------------------------------------------------------------
-// API Client
+// Theme Manager (Dark / Light)
+// --------------------------------------------------------------------------
+function initTheme() {
+  const saved = localStorage.getItem("lightprint_theme") || "light";
+  document.documentElement.setAttribute("data-theme", saved);
+  updateThemeUi(saved);
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute("data-theme") || "light";
+  const next = current === "light" ? "dark" : "light";
+  document.documentElement.setAttribute("data-theme", next);
+  localStorage.setItem("lightprint_theme", next);
+  updateThemeUi(next);
+}
+
+function updateThemeUi(theme) {
+  if (!themeLabel || !themeIcon) return;
+  if (theme === "dark") {
+    themeLabel.textContent = "Light";
+    themeIcon.innerHTML = `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/>
+        <line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/>
+        <line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+    `;
+  } else {
+    themeLabel.textContent = "Dark";
+    themeIcon.innerHTML = `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+    `;
+  }
+}
+
+// --------------------------------------------------------------------------
+// API Queries
 // --------------------------------------------------------------------------
 async function performSearch(query) {
-  showToast(`Searching ToS;DR database for "${query}"...`, "info");
+  showStatusBar(`Searching database for "${query}"...`, "info");
   if (resultsCount) resultsCount.textContent = "Querying...";
 
   try {
@@ -208,22 +251,22 @@ async function performSearch(query) {
 
     if (!res.ok) {
       const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.error || `Server returned ${res.status}`);
+      throw new Error(errData.error || `Server responded with ${res.status}`);
     }
 
     const data = await res.json();
     state.services = data.services || [];
-    hideToast();
+    hideStatusBar();
     if (resultsTitle) resultsTitle.textContent = `Search Results: "${query}"`;
     renderTable();
   } catch (err) {
-    showToast(`Search failed: ${err.message}`, "error");
+    showStatusBar(`Search failed: ${err.message}`, "error");
     if (resultsCount) resultsCount.textContent = "Communication error";
   }
 }
 
 async function loadInitialServices() {
-  if (resultsTitle) resultsTitle.textContent = "Platform Privacy Audits";
+  if (resultsTitle) resultsTitle.textContent = "Platform Audits";
   if (resultsCount) resultsCount.textContent = "Loading...";
 
   try {
@@ -237,14 +280,14 @@ async function loadInitialServices() {
       return;
     }
   } catch {
-    // If /api/featured is unavailable, fallback to search
+    // Fallback if needed
   }
 
   performSearch("Spotify");
 }
 
 async function fetchServiceDetails(serviceId) {
-  showToast(`Auditing platform details #${serviceId}...`, "info");
+  showStatusBar(`Auditing platform details #${serviceId}...`, "info");
   try {
     const res = await fetch(`/api/service?id=${encodeURIComponent(serviceId)}`);
     updateNodeBadge(res.headers.get("X-Server-Node"));
@@ -254,10 +297,10 @@ async function fetchServiceDetails(serviceId) {
     }
 
     const data = await res.json();
-    hideToast();
+    hideStatusBar();
     return data.service || null;
   } catch (err) {
-    showToast(`Audit failed: ${err.message}`, "error");
+    showStatusBar(`Audit query failed: ${err.message}`, "error");
     return null;
   }
 }
@@ -291,9 +334,8 @@ function renderTable() {
   if (list.length === 0) {
     servicesTableBody.innerHTML = `
       <tr>
-        <td colspan="5" style="text-align: center; padding: 3rem 1rem; color: var(--text-muted);">
-          <p style="font-weight: 600; font-size: 0.95rem;">No platforms match the selected filter</p>
-          <p style="font-size: 0.82rem; color: var(--text-faint); margin-top: 0.25rem;">Try selecting "All" or entering a different search term.</p>
+        <td colspan="5" style="text-align: center; padding: 2.5rem 1rem; color: var(--text-muted); font-family: var(--font-mono); font-size: 0.82rem;">
+          // NO RECORDS FOUND MATCHING SELECTED FILTER
         </td>
       </tr>
     `;
@@ -309,32 +351,32 @@ function renderTable() {
     return `
       <tr>
         <td>
-          <div class="service-cell">
-            <div class="service-icon-box">${initial}</div>
+          <div class="cell-platform">
+            <div class="icon-tag-avatar">${initial}</div>
             <div>
-              <span class="service-name-text">${escapeHtml(svc.name)}</span>
-              ${domain ? `<span class="service-domain-text">${escapeHtml(domain)}</span>` : ""}
+              <span class="platform-name">${escapeHtml(svc.name)}</span>
+              ${domain ? `<span class="platform-url">${escapeHtml(domain)}</span>` : ""}
             </div>
           </div>
         </td>
         <td>
-          <span class="grade-pill-soft grade-${grade.replace("/", "")}">
+          <span class="stamp-grade grade-${grade.replace("/", "")}">
             Grade ${grade}
           </span>
         </td>
         <td>
-          <span style="font-size: 0.82rem; color: var(--text-muted); font-weight: 500;">
-            ${svc.is_comprehensively_reviewed ? "✅ Reviewed" : "ℹ️ Monitored"}
+          <span style="font-size: 0.78rem; font-family: var(--font-mono); font-weight: 600; color: var(--text-muted);">
+            ${svc.is_comprehensively_reviewed ? "AUDITED" : "MONITORED"}
           </span>
         </td>
         <td style="max-width: 380px;">
-          <span style="font-size: 0.84rem; color: var(--text-muted); line-height: 1.4; display: block;">
+          <span style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.4; display: block;">
             ${escapeHtml(summary)}
           </span>
         </td>
         <td style="text-align: right;">
-          <button type="button" class="btn-table-action" onclick="inspectService('${svc.id}')">
-            View Details →
+          <button type="button" class="btn-inspect-sharp" onclick="inspectService('${svc.id}')">
+            Inspect Fine Print →
           </button>
         </td>
       </tr>
@@ -343,7 +385,7 @@ function renderTable() {
 }
 
 // --------------------------------------------------------------------------
-// Modal Docket Logic
+// Modal Inspection Docket
 // --------------------------------------------------------------------------
 window.inspectService = async function(serviceId) {
   const fullData = await fetchServiceDetails(serviceId);
@@ -355,11 +397,11 @@ window.inspectService = async function(serviceId) {
   const grade = extractGrade(fullData);
   if (modalServiceName) modalServiceName.textContent = fullData.name || "Platform Details";
   if (modalServiceUrls) {
-    modalServiceUrls.textContent = `DOSSIER #${fullData.id || serviceId} • ${(fullData.urls && fullData.urls.length) ? fullData.urls.join(", ") : "No domain"}`;
+    modalServiceUrls.textContent = `DOSSIER #${fullData.id || serviceId} // ${(fullData.urls && fullData.urls.length) ? fullData.urls.join(", ") : "NO DOMAIN RECORDED"}`;
   }
   if (modalGradeBadge) {
     modalGradeBadge.textContent = `Grade ${grade}`;
-    modalGradeBadge.className = `grade-pill-soft grade-${grade.replace("/", "")}`;
+    modalGradeBadge.className = `stamp-grade grade-${grade.replace("/", "")}`;
   }
 
   modalTabs.forEach(t => t.classList.toggle("active", t.dataset.tab === "all"));
@@ -398,7 +440,7 @@ function renderModalPoints() {
   }
 
   if (filtered.length === 0) {
-    modalPointsList.innerHTML = `<p style="text-align: center; color: var(--text-faint); padding: 2.5rem 0; font-size: 0.9rem;">No recorded clauses under this tab.</p>`;
+    modalPointsList.innerHTML = `<p style="font-family: var(--font-mono); font-size: 0.8rem; text-align: center; color: var(--text-faint); padding: 2rem 0;">// NO RECORDED CLAUSES UNDER THIS TAB</p>`;
     return;
   }
 
@@ -409,15 +451,15 @@ function renderModalPoints() {
     const quote = pt.quoteText || "";
 
     return `
-      <div class="clause-card-mini ${classification}">
-        <div class="clause-card-top">
-          <h4>${escapeHtml(caseTitle)}</h4>
-          <span class="grade-pill-soft grade-${classification === 'bad' || classification === 'blocker' ? 'E' : classification === 'good' ? 'A' : 'NA'}" style="font-size: 0.72rem; padding: 0.15rem 0.5rem;">
+      <div class="clause-card-sharp ${classification}">
+        <div class="clause-title-sharp">
+          <span>${escapeHtml(caseTitle)}</span>
+          <span class="stamp-grade grade-${classification === 'bad' || classification === 'blocker' ? 'E' : classification === 'good' ? 'A' : 'NA'}" style="font-size: 0.68rem; padding: 0.1rem 0.4rem;">
             ${classification}
           </span>
         </div>
-        ${caseDesc ? `<p class="clause-card-desc">${escapeHtml(caseDesc)}</p>` : ""}
-        ${quote ? `<p class="clause-card-quote">“${escapeHtml(quote)}”</p>` : ""}
+        ${caseDesc ? `<p class="clause-desc-sharp">${escapeHtml(caseDesc)}</p>` : ""}
+        ${quote ? `<p class="clause-quote-sharp">“${escapeHtml(quote)}”</p>` : ""}
       </div>
     `;
   }).join("");
@@ -438,7 +480,7 @@ function runClauseScanner() {
   if (!scannerInput || !scannerResults) return;
   const text = scannerInput.value.trim();
   if (!text) {
-    showToast("Please paste contract terms into the box before scanning.", "error");
+    showStatusBar("INPUT REQUIRED: Paste contract terms into the box before scanning.", "error");
     return;
   }
 
@@ -448,7 +490,7 @@ function runClauseScanner() {
       name: "Forced Arbitration & Class Action Waiver",
       severity: "danger",
       pattern: /\b(arbitration|class\s+action\s+waiver|waive\s+(any\s+)?right\s+to\s+bring\s+a\s+class|disputes?\s+settled\s+by\s+arbitration)\b/i,
-      desc: "Forfeits constitutional rights to civil court and prohibits collective class action litigation against the corporation."
+      desc: "Forfeits constitutional access to civil court and prohibits collective class action litigation against the corporation."
     },
     {
       id: "unilateral",
@@ -485,26 +527,26 @@ function runClauseScanner() {
   scannerResults.hidden = false;
   if (matched.length > 0) {
     const isDanger = matched.some(m => m.severity === "danger");
-    scannerResults.className = `verdict-box ${isDanger ? "danger" : "warning"}`;
+    scannerResults.className = `verdict-alert ${isDanger ? "danger" : "warning"}`;
     scannerResults.innerHTML = `
-      <p style="font-weight: 700; margin-bottom: 0.5rem; color: #991b1b;">
-        ⚠️ ${matched.length} High-Risk Legal Traps Detected in Text:
+      <p style="font-weight: 800; font-family: var(--font-mono); font-size: 0.85rem; margin-bottom: 0.4rem; text-transform: uppercase;">
+        // VERDICT: ${matched.length} PREDATORY LEGAL TRAP(S) IDENTIFIED
       </p>
-      <div style="margin-bottom: 0.75rem;">
-        ${matched.map(m => `<span class="trap-pill-badge">${m.name}</span>`).join("")}
+      <div style="margin-bottom: 0.6rem;">
+        ${matched.map(m => `<span class="tag-redacted">${m.name}</span>`).join("")}
       </div>
-      <ul style="list-style-type: disc; margin-left: 1.25rem; font-size: 0.85rem; color: #7f1d1d; line-height: 1.5;">
-        ${matched.map(m => `<li style="margin-bottom: 0.3rem;"><strong>${m.name}:</strong> ${m.desc}</li>`).join("")}
+      <ul style="list-style-type: square; margin-left: 1.25rem; font-size: 0.8rem; line-height: 1.5;">
+        ${matched.map(m => `<li style="margin-bottom: 0.25rem;"><strong>${m.name}:</strong> ${m.desc}</li>`).join("")}
       </ul>
     `;
   } else {
-    scannerResults.className = "verdict-box clean";
+    scannerResults.className = "verdict-alert clean";
     scannerResults.innerHTML = `
-      <p style="font-weight: 700; color: #166534; margin-bottom: 0.25rem;">
-        ✅ Clean Excerpt: No Standard Predatory Traps Found
+      <p style="font-weight: 800; font-family: var(--font-mono); font-size: 0.85rem; text-transform: uppercase;">
+        // AUDIT PASSED: ZERO MATCHING PREDATORY TRAPS DETECTED
       </p>
-      <p style="color: #14532d; font-size: 0.85rem;">
-        The supplied text contains no matching regex signatures for forced arbitration, copyright forfeiture, or unilateral change clauses.
+      <p style="font-size: 0.8rem; margin-top: 0.2rem;">
+        Supplied text contains no regex signatures for forced arbitration, copyright forfeiture, or unilateral change clauses.
       </p>
     `;
   }
@@ -527,14 +569,14 @@ function updateNodeBadge(nodeId) {
   }
 }
 
-function showToast(message, type = "info") {
+function showStatusBar(message, type = "info") {
   if (!statusBanner) return;
-  statusBanner.textContent = message;
-  statusBanner.className = `status-toast ${type}`;
+  statusBanner.textContent = `// ${message}`;
+  statusBanner.className = `status-bar ${type}`;
   statusBanner.hidden = false;
 }
 
-function hideToast() {
+function hideStatusBar() {
   if (statusBanner) statusBanner.hidden = true;
 }
 
@@ -546,12 +588,4 @@ function escapeHtml(str) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
-}
-
-function toggleTheme() {
-  const current = document.documentElement.getAttribute("data-theme") || "light";
-  const next = current === "light" ? "dark" : "light";
-  document.documentElement.setAttribute("data-theme", next);
-  if (themeLabel) themeLabel.textContent = next === "dark" ? "Light" : "Dark";
-  if (themeIcon) themeIcon.textContent = next === "dark" ? "☀️" : "🌙";
 }

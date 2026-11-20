@@ -1,151 +1,213 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LightPrint — Terms of Service Intelligence</title>
-  <meta name="description" content="Clean, accessible dashboard auditing Terms of Service agreements and exposing hidden legal traps.">
+  <meta name="description" content="Lean, precision-engineered legal intelligence dashboard auditing corporate Terms of Service.">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <a href="#main-content" class="skip-link">Skip to main content [Enter]</a>
 
   <div class="app-shell">
-    <!-- Left Sidebar (Ref: Image 2) -->
+    <!-- Left Lean Sidebar -->
     <aside class="app-sidebar">
       <div>
-        <div class="sidebar-logo">
-          <div class="logo-badge">LP</div>
-          <span class="logo-text">LightPrint</span>
+        <div class="sidebar-brand">
+          <div class="brand-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+          <span class="brand-text">LightPrint</span>
         </div>
 
-        <ul class="sidebar-menu">
-          <li><a href="#dashboard" class="menu-item active"><span class="menu-icon">📊</span> Dashboard</a></li>
-          <li><a href="#services-table" class="menu-item"><span class="menu-icon">📋</span> Terms Index</a></li>
-          <li><a href="#clause-scanner" class="menu-item"><span class="menu-icon">⚡</span> Clause Scanner</a></li>
-          <li><a href="#cluster-nodes" class="menu-item"><span class="menu-icon">🌐</span> Cluster Nodes</a></li>
-          <li><a href="#settings" class="menu-item"><span class="menu-icon">⚙️</span> Settings</a></li>
+        <ul class="nav-list">
+          <li>
+            <a href="#dashboard" class="nav-link active">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>
+              </svg>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="#services-table" class="nav-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+              </svg>
+              <span>Terms Index</span>
+            </a>
+          </li>
+          <li>
+            <a href="#clause-scanner" class="nav-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>
+              </svg>
+              <span>Clause Scanner</span>
+            </a>
+          </li>
+          <li>
+            <a href="#cluster-nodes" class="nav-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="20" height="8" x="2" y="2" rx="1"/><rect width="20" height="8" x="2" y="14" rx="1"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/>
+              </svg>
+              <span>Cluster Nodes</span>
+            </a>
+          </li>
+          <li>
+            <a href="#settings" class="nav-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+              </svg>
+              <span>Settings</span>
+            </a>
+          </li>
         </ul>
       </div>
 
-      <div class="sidebar-user">
-        <div class="user-avatar">BD</div>
-        <div class="user-info">
-          <span class="user-name">B. Dushime</span>
-          <span class="user-email">b.dushime1@alustudent.com</span>
+      <div class="sidebar-footer">
+        <div class="user-badge">
+          <div class="user-avatar-initials">BD</div>
+          <div class="user-names">
+            <span class="user-fullname">B. Dushime</span>
+            <span class="user-subtext">b.dushime1</span>
+          </div>
         </div>
       </div>
     </aside>
 
-    <!-- Main Content Area -->
+    <!-- Main Content Stream -->
     <div class="app-main">
-      <!-- Top Navigation Bar -->
+      <!-- Topbar Navigation -->
       <header class="app-topbar">
         <div class="topbar-left">
-          <h1 class="topbar-greeting">Welcome, Auditor!</h1>
-          <div class="topbar-search">
-            <span class="search-ico">🔍</span>
+          <h1 class="topbar-heading">Legal Audit Stream</h1>
+          <div class="topbar-search-box">
+            <svg class="icon-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
             <input 
               type="text" 
               id="globalSearchInput" 
-              placeholder="Search platforms (Spotify, Reddit)..."
+              placeholder="Search platform index (Spotify, Reddit, Discord)..."
               autocomplete="off"
             >
           </div>
         </div>
 
         <div class="topbar-right">
-          <div class="pill-node" title="Active application node">
-            <span class="dot-pulse"></span>
-            Node: <strong id="nodeName">Web01</strong>
+          <div class="cluster-node-pill" title="Active server node behind load balancer">
+            <span class="dot-live"></span>
+            <span>NODE: <strong id="nodeName">Web01</strong></span>
           </div>
-          <button type="button" id="themeToggle" class="btn-pill-dark" aria-label="Toggle visual theme">
-            <span id="themeIcon">🌙</span> <span id="themeLabel">Dark</span>
+          <button type="button" id="themeToggle" class="btn-theme-toggle" aria-label="Toggle dark/light theme">
+            <span id="themeIcon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+              </svg>
+            </span>
+            <span id="themeLabel">Dark</span>
           </button>
         </div>
       </header>
 
-      <main id="main-content" class="dashboard-content">
-        <!-- 3 KPI Cards Strip (Ref: Image 2) -->
-        <section class="kpi-strip">
-          <div class="kpi-card pink">
-            <div class="kpi-icon-box">📄</div>
+      <!-- Dashboard View -->
+      <main id="main-content" class="dashboard-body">
+        <!-- 3 KPI Cards Row -->
+        <section class="kpi-row">
+          <div class="kpi-box pink">
+            <div class="kpi-icon-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+              </svg>
+            </div>
             <div>
-              <p class="kpi-label">Platforms Indexed</p>
-              <h2 class="kpi-value">10,290+</h2>
+              <p class="kpi-label-text">Platforms Indexed</p>
+              <h2 class="kpi-value-text">10,290+</h2>
             </div>
           </div>
 
-          <div class="kpi-card blue">
-            <div class="kpi-icon-box">🛡️</div>
+          <div class="kpi-box blue">
+            <div class="kpi-icon-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </div>
             <div>
-              <p class="kpi-label">Predatory Ratio</p>
-              <h2 class="kpi-value">71% Flagged</h2>
+              <p class="kpi-label-text">Predatory Ratio</p>
+              <h2 class="kpi-value-text">71% Flagged</h2>
             </div>
           </div>
 
-          <div class="kpi-card purple">
-            <div class="kpi-icon-box">⚡</div>
+          <div class="kpi-box purple">
+            <div class="kpi-icon-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="20" height="8" x="2" y="2" rx="1"/><rect width="20" height="8" x="2" y="14" rx="1"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/>
+              </svg>
+            </div>
             <div>
-              <p class="kpi-label">Load Balancer (Lb01)</p>
-              <h2 class="kpi-value">Web01 / Web02</h2>
+              <p class="kpi-label-text">Load Balancer (Lb01)</p>
+              <h2 class="kpi-value-text">Web01 / Web02</h2>
             </div>
           </div>
         </section>
 
-        <!-- Status Notification Toast -->
-        <div id="statusBanner" class="status-toast info" role="status" aria-live="polite" hidden></div>
+        <!-- Notification Status Bar -->
+        <div id="statusBanner" class="status-bar info" role="status" aria-live="polite" hidden></div>
 
-        <!-- Quick Platform Search Banner -->
-        <section class="search-banner">
-          <div style="display: flex; justify-content: space-between; align-items: baseline;">
-            <h2 class="search-banner-title">Search Terms of Service Database</h2>
-            <span style="font-size: 0.82rem; color: var(--text-faint);">Powered by ToS;DR REST API</span>
+        <!-- Quick Search Bar -->
+        <section class="search-card">
+          <div class="search-title-row">
+            <h2>Query ToS;DR Legal Database</h2>
+            <span>REST API v2/v4</span>
           </div>
 
-          <form id="searchForm" class="search-input-group" role="search" onsubmit="return false;">
+          <form id="searchForm" class="search-action-row" role="search" onsubmit="return false;">
             <input 
               type="text" 
               id="searchInput" 
-              placeholder="Enter service name (e.g. YouTube, Discord, Steam, TikTok)..." 
+              placeholder="Search company or platform (e.g. YouTube, Spotify, Reddit, Steam, Discord)..."
               autocomplete="off"
             >
-            <button type="button" id="clearBtn" class="btn-pill-dark" style="background-color: var(--bg-app); color: var(--text-muted); border: 1px solid var(--border-subtle);" hidden>Clear</button>
-            <button type="submit" id="searchBtn" class="btn-action-primary">Search</button>
+            <button type="button" id="clearBtn" class="btn-inspect-sharp" hidden>Clear</button>
+            <button type="submit" id="searchBtn" class="btn-primary-lean">Search</button>
           </form>
 
-          <div class="quick-chips-row">
-            <span style="color: var(--text-faint); margin-right: 0.2rem;">Quick search:</span>
-            <button type="button" class="chip-pill" data-query="YouTube">YouTube</button>
-            <button type="button" class="chip-pill" data-query="Spotify">Spotify</button>
-            <button type="button" class="chip-pill" data-query="Reddit">Reddit</button>
-            <button type="button" class="chip-pill" data-query="Discord">Discord</button>
-            <button type="button" class="chip-pill" data-query="Steam">Steam</button>
-            <button type="button" class="chip-pill" data-query="DuckDuckGo">DuckDuckGo</button>
+          <div class="chips-line">
+            <span style="color: var(--text-faint); font-size: 0.76rem; font-family: var(--font-mono); margin-right: 0.3rem;">INDEX:</span>
+            <button type="button" class="chip-btn" data-query="YouTube">YouTube</button>
+            <button type="button" class="chip-btn" data-query="Spotify">Spotify</button>
+            <button type="button" class="chip-btn" data-query="Reddit">Reddit</button>
+            <button type="button" class="chip-btn" data-query="Discord">Discord</button>
+            <button type="button" class="chip-btn" data-query="Steam">Steam</button>
+            <button type="button" class="chip-btn" data-query="RiseUp">RiseUp</button>
+            <button type="button" class="chip-btn" data-query="DuckDuckGo">DuckDuckGo</button>
           </div>
         </section>
 
-        <!-- Clean Data Table Card (Ref: Image 2 Medication Tracker) -->
-        <section id="services-table" class="table-card">
-          <div class="table-header-row">
-            <div class="table-title-area">
-              <h2 id="resultsTitle" class="table-main-title">Platform Privacy Audits</h2>
-              <span id="resultsCount" class="badge-tag-count">7 items</span>
+        <!-- Data Table Panel -->
+        <section id="services-table" class="table-panel">
+          <div class="table-toolbar">
+            <div class="toolbar-title-wrap">
+              <h2 id="resultsTitle">Platform Audits</h2>
+              <span id="resultsCount" class="items-tag">7 items</span>
             </div>
 
-            <!-- Grade Filter Pills -->
-            <div class="grade-tabs-bar" role="group" aria-label="Filter platforms by privacy grade">
-              <button type="button" class="grade-tab-btn active" data-grade="ALL">All</button>
-              <button type="button" class="grade-tab-btn" data-grade="A">Grade A</button>
-              <button type="button" class="grade-tab-btn" data-grade="B">Grade B</button>
-              <button type="button" class="grade-tab-btn" data-grade="C">Grade C</button>
-              <button type="button" class="grade-tab-btn" data-grade="D">Grade D</button>
-              <button type="button" class="grade-tab-btn" data-grade="E">Grade E (Worst)</button>
+            <!-- Grade Filter Tabs -->
+            <div class="grade-filters" role="group" aria-label="Filter platforms by privacy grade">
+              <button type="button" class="filter-tab active" data-grade="ALL">All</button>
+              <button type="button" class="filter-tab" data-grade="A">Grade A</button>
+              <button type="button" class="filter-tab" data-grade="B">Grade B</button>
+              <button type="button" class="filter-tab" data-grade="C">Grade C</button>
+              <button type="button" class="filter-tab" data-grade="D">Grade D</button>
+              <button type="button" class="filter-tab" data-grade="E">Grade E (Worst)</button>
             </div>
 
             <div>
-              <label for="sortSelect" class="sr-only">Sort table</label>
-              <select id="sortSelect" class="sort-select-clean">
+              <label for="sortSelect" class="sr-only">Sort records</label>
+              <select id="sortSelect" class="sort-select-box">
                 <option value="worst-first">Worst Privacy First (E → A)</option>
                 <option value="best-first">Best Privacy First (A → E)</option>
                 <option value="name-az">Name (A to Z)</option>
@@ -153,90 +215,94 @@
             </div>
           </div>
 
-          <!-- Data Table -->
-          <div class="data-table-wrap">
-            <table class="clean-table" aria-live="polite">
+          <!-- Table -->
+          <div class="table-overflow">
+            <table class="sharp-table" aria-live="polite">
               <thead>
                 <tr>
                   <th>Platform</th>
                   <th>Privacy Grade</th>
-                  <th>Status</th>
+                  <th>Audit Status</th>
                   <th>Key Summary</th>
                   <th style="text-align: right;">Action</th>
                 </tr>
               </thead>
               <tbody id="servicesTableBody">
-                <!-- Injected via app.js -->
+                <!-- Dynamically populated via app.js -->
               </tbody>
             </table>
           </div>
         </section>
 
-        <!-- Live Clause Scanner Card -->
-        <section id="clause-scanner" class="scanner-card-modern">
-          <div class="scanner-title-area">
-            <h3>Custom Agreement Scanner <span style="font-size: 0.78rem; font-weight: 600; color: var(--primary); background: var(--primary-soft); padding: 0.2rem 0.5rem; border-radius: var(--radius-pill); margin-left: 0.5rem;">Regex Engine</span></h3>
-            <p>Paste an unindexed campus housing lease, mobile app agreement, or fine print snippet to run instant heuristic trap detection.</p>
+        <!-- Live Clause Scanner Panel -->
+        <section id="clause-scanner" class="scanner-panel">
+          <div class="scanner-heading">
+            <h3>Contract & Lease Clause Scanner</h3>
+            <p>Paste fine print, campus lease clauses, or unlisted software terms to run heuristic regex analysis for predatory stipulations.</p>
           </div>
 
-          <div class="preset-strip">
-            <span style="font-size: 0.8rem; color: var(--text-faint);">Try sample:</span>
-            <button type="button" class="preset-tag-btn" data-preset="arbitration">Forced Arbitration</button>
-            <button type="button" class="preset-tag-btn" data-preset="unilateral">Change Without Notice</button>
-            <button type="button" class="preset-tag-btn" data-preset="copyright">Perpetual Content License</button>
-            <button type="button" class="preset-tag-btn" data-preset="sharing">Data Sharing with Third Parties</button>
+          <div class="presets-row">
+            <span style="font-size: 0.76rem; color: var(--text-faint); font-family: var(--font-mono);">PRESET:</span>
+            <button type="button" class="preset-pill-btn" data-preset="arbitration">Forced Arbitration Waiver</button>
+            <button type="button" class="preset-pill-btn" data-preset="unilateral">Unilateral Alteration Without Notice</button>
+            <button type="button" class="preset-pill-btn" data-preset="copyright">Perpetual Content License</button>
+            <button type="button" class="preset-pill-btn" data-preset="sharing">Third-Party Data Sale</button>
           </div>
 
           <div>
             <textarea 
               id="scannerInput" 
-              class="scanner-textarea" 
+              class="lean-textarea" 
               rows="4" 
               placeholder="Paste contract terms or fine print paragraph here..."
             ></textarea>
 
-            <div class="scanner-btn-row">
-              <button type="button" id="scanBtn" class="btn-action-primary">Scan For Traps</button>
-              <button type="button" id="clearScannerBtn" class="btn-table-action">Clear</button>
+            <div class="scanner-actions-row">
+              <button type="button" id="scanBtn" class="btn-primary-lean">Scan Excerpt</button>
+              <button type="button" id="clearScannerBtn" class="btn-inspect-sharp">Clear</button>
             </div>
           </div>
 
-          <div id="scannerResults" class="verdict-box" hidden>
+          <div id="scannerResults" class="verdict-alert" hidden>
             <!-- Injected via app.js -->
           </div>
         </section>
       </main>
 
-      <!-- Clean Footer -->
-      <footer class="app-footer">
+      <!-- Colophon -->
+      <footer class="app-colophon">
         <p>
           <strong>LightPrint</strong> — Distributed Web Application for <em>Playing Around with APIs</em>. 
           Architecture: <strong>Web01</strong> & <strong>Web02</strong> behind <strong>Lb01</strong> | 
-          Data source: <a href="https://tosdr.org" target="_blank" rel="noopener" style="color: var(--primary); text-decoration: none;">ToS;DR API</a>
+          Source: <a href="https://tosdr.org" target="_blank" rel="noopener" style="color: var(--primary); text-decoration: none;">ToS;DR API</a>
         </p>
       </footer>
     </div>
   </div>
 
-  <!-- Inspection Modal (Strictly Hidden by Default) -->
+  <!-- Inspection Modal Docket -->
   <div id="detailModal" class="modal-backdrop" hidden role="dialog" aria-modal="true" aria-labelledby="modalServiceName">
-    <div class="modal-card">
-      <div class="modal-header-clean">
-        <div class="modal-header-titles">
-          <p id="modalServiceUrls" style="font-size: 0.78rem; color: var(--text-faint);">DOSSIER #0000</p>
+    <div class="modal-window">
+      <div class="modal-header-sharp">
+        <div>
           <h2 id="modalServiceName">Platform Details</h2>
+          <p id="modalServiceUrls">DOSSIER #0000</p>
         </div>
         <div style="display: flex; align-items: center; gap: 0.75rem;">
-          <span id="modalGradeBadge" class="grade-pill-soft grade-NA">Grade -</span>
-          <button type="button" id="closeModalBtn" class="modal-close-icon" aria-label="Close dialog">✕</button>
+          <span id="modalGradeBadge" class="stamp-grade grade-NA">Grade -</span>
+          <button type="button" id="closeModalBtn" class="btn-close-sharp" aria-label="Close dialog">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
         </div>
       </div>
 
-      <div class="modal-tabs-row">
-        <button type="button" class="modal-tab-pill active" data-tab="all">All Clauses (<span id="countAll">0</span>)</button>
-        <button type="button" class="modal-tab-pill" data-tab="bad">Red Flags (<span id="countBad">0</span>)</button>
-        <button type="button" class="modal-tab-pill" data-tab="neutral">Neutral (<span id="countNeutral">0</span>)</button>
-        <button type="button" class="modal-tab-pill" data-tab="good">Good (<span id="countGood">0</span>)</button>
+      <div class="modal-tabs-strip">
+        <button type="button" class="modal-tab-sharp active" data-tab="all">All Clauses (<span id="countAll">0</span>)</button>
+        <button type="button" class="modal-tab-sharp" data-tab="bad">Red Flags (<span id="countBad">0</span>)</button>
+        <button type="button" class="modal-tab-sharp" data-tab="neutral">Neutral (<span id="countNeutral">0</span>)</button>
+        <button type="button" class="modal-tab-sharp" data-tab="good">Good (<span id="countGood">0</span>)</button>
       </div>
 
       <div id="modalPointsList" class="modal-body-scroll">
