@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LightPrint — Terms of Service Unmasked</title>
+  <meta name="description" content="Shining light on the hidden traps, privacy gotchas, and data tracking in Terms of Service agreements.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="header-inner container">
+      <div class="brand">
+        <span class="brand-icon">🔦</span>
+        <div>
+          <h1 class="brand-title">LightPrint</h1>
+          <p class="brand-subtitle">Terms of Service Unmasked</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <span id="nodeBadge" class="node-badge" title="Active application server node">
+          <span class="status-dot"></span> Node: <strong id="nodeName">Checking...</strong>
+        </span>
+        <button id="themeToggle" class="btn-secondary" aria-label="Toggle dark/light theme">
+          <span id="themeIcon">🌙</span> <span id="themeLabel">Dark</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content" class="container">
+    <!-- Hero / Intro -->
+    <section class="hero-section">
+      <h2 class="hero-title">Stop blindly clicking <span class="highlight">"I Agree"</span>.</h2>
+      <p class="hero-desc">
+        Fine print hides the traps in microscopic shadows. LightPrint pulls data from the public 
+        <strong>ToS;DR API</strong> to expose invasive tracking, forced arbitration, and copyright grabs before you sign your rights away.
+      </p>
+
+      <!-- Search Bar -->
+      <form id="searchForm" class="search-form" role="search" onsubmit="return false;">
+        <label for="searchInput" class="sr-only">Search app or service name</label>
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="Search service (e.g. YouTube, Spotify, Reddit, Steam, Discord)..." 
+            autocomplete="off"
+            spellcheck="false"
+          >
+          <button type="button" id="clearBtn" class="clear-btn" aria-label="Clear search" hidden>✕</button>
+          <button type="submit" id="searchBtn" class="btn-primary">Search</button>
+        </div>
+      </form>
+
+      <!-- Quick Pills -->
+      <div class="quick-pills" aria-label="Popular searches">
+        <span class="pills-label">Quick check:</span>
+        <button type="button" class="pill-btn" data-query="YouTube">YouTube</button>
+        <button type="button" class="pill-btn" data-query="Spotify">Spotify</button>
+        <button type="button" class="pill-btn" data-query="Reddit">Reddit</button>
+        <button type="button" class="pill-btn" data-query="Discord">Discord</button>
+        <button type="button" class="pill-btn" data-query="Steam">Steam</button>
+        <button type="button" class="pill-btn" data-query="ChatGPT">ChatGPT</button>
+        <button type="button" class="pill-btn" data-query="TikTok">TikTok</button>
+      </div>
+    </section>
+
+    <!-- Status / Notification Banner -->
+    <div id="statusBanner" class="status-banner" role="status" aria-live="polite" hidden></div>
+
+    <!-- Filter and Sort Toolbar -->
+    <section class="toolbar-section">
+      <div class="toolbar-left">
+        <span class="toolbar-label">Grade Filter:</span>
+        <div class="filter-chips" role="group" aria-label="Filter by privacy grade">
+          <button type="button" class="chip active" data-grade="ALL">All</button>
+          <button type="button" class="chip grade-a" data-grade="A">Grade A</button>
+          <button type="button" class="chip grade-b" data-grade="B">Grade B</button>
+          <button type="button" class="chip grade-c" data-grade="C">Grade C</button>
+          <button type="button" class="chip grade-d" data-grade="D">Grade D</button>
+          <button type="button" class="chip grade-e" data-grade="E">Grade E (Worst)</button>
+        </div>
+      </div>
+
+      <div class="toolbar-right">
+        <label for="sortSelect" class="sr-only">Sort results</label>
+        <select id="sortSelect" class="sort-select">
+          <option value="worst-first">Worst Privacy First (E → A)</option>
+          <option value="best-first">Best Privacy First (A → E)</option>
+          <option value="name-az">Name (A to Z)</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Services Grid -->
+    <section class="results-section">
+      <div class="results-header">
+        <h3 id="resultsTitle" class="section-title">Featured Services</h3>
+        <span id="resultsCount" class="results-count">Loading initial services...</span>
+      </div>
+
+      <div id="servicesGrid" class="services-grid" aria-live="polite">
+        <!-- Dynamic cards injected via app.js -->
+      </div>
+    </section>
+
+    <!-- Interactive Clause Scanner (Custom Text Analysis) -->
+    <section class="scanner-section">
+      <div class="scanner-card">
+        <div class="scanner-header">
+          <div>
+            <h3 class="scanner-title">Live Clause Scanner <span class="badge-mini">Regex Engine</span></h3>
+            <p class="scanner-desc">
+              Evaluating an obscure campus lease or a niche app not yet in the ToS;DR database? 
+              Paste a contract excerpt below to detect common predatory clauses.
+            </p>
+          </div>
+        </div>
+
+        <div class="scanner-presets">
+          <span>Try a sample:</span>
+          <button type="button" class="preset-btn" data-preset="arbitration">Forced Arbitration</button>
+          <button type="button" class="preset-btn" data-preset="unilateral">Change Without Notice</button>
+          <button type="button" class="preset-btn" data-preset="copyright">Perpetual Content Rights</button>
+          <button type="button" class="preset-btn" data-preset="sharing">Data Sharing with Third Parties</button>
+        </div>
+
+        <div class="scanner-form">
+          <label for="scannerInput" class="sr-only">Contract text to analyze</label>
+          <textarea 
+            id="scannerInput" 
+            rows="4" 
+            placeholder="Paste contract terms or fine print paragraph here..."
+          ></textarea>
+
+          <div class="scanner-actions">
+            <button type="button" id="scanBtn" class="btn-primary">Scan For Traps</button>
+            <button type="button" id="clearScannerBtn" class="btn-secondary">Clear</button>
+          </div>
+        </div>
+
+        <div id="scannerResults" class="scanner-results" hidden>
+          <!-- Injected via app.js -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Detailed Service Modal / Drawer -->
+  <div id="detailModal" class="modal-backdrop" hidden role="dialog" aria-modal="true" aria-labelledby="modalServiceName">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div>
+          <span id="modalGradeBadge" class="grade-pill">Grade -</span>
+          <h2 id="modalServiceName" class="modal-title">Service Details</h2>
+          <p id="modalServiceUrls" class="modal-meta"></p>
+        </div>
+        <button type="button" id="closeModalBtn" class="close-btn" aria-label="Close dialog">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-tabs">
+          <button type="button" class="tab-btn active" data-tab="all">All Clauses (<span id="countAll">0</span>)</button>
+          <button type="button" class="tab-btn tab-bad" data-tab="bad">Red Flags (<span id="countBad">0</span>)</button>
+          <button type="button" class="tab-btn tab-neutral" data-tab="neutral">Neutral (<span id="countNeutral">0</span>)</button>
+          <button type="button" class="tab-btn tab-good" data-tab="good">Good (<span id="countGood">0</span>)</button>
+        </div>
+
+        <div id="modalPointsList" class="points-list">
+          <!-- Injected via app.js -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>
+        <strong>LightPrint</strong> — A distributed web application built for the <em>Playing Around with APIs</em> assignment.
+      </p>
+      <p class="footer-meta">
+        Architecture: <strong>Web01</strong> & <strong>Web02</strong> balanced behind <strong>Lb01</strong> | 
+        API Data: <a href="https://tosdr.org" target="_blank" rel="noopener">ToS;DR (Terms of Service; Didn't Read)</a> | 
+        Author: B. Dushime (<a href="mailto:b.dushime1@alustudent.com">b.dushime1@alustudent.com</a>)
+      </p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
