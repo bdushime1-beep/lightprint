@@ -3,200 +3,247 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LIGHTPRINT // Terms of Service Legal Audit</title>
-  <meta name="description" content="Independent legal intelligence dispatch unmasking corporate terms of service, forced arbitration, and predatory tracking.">
+  <title>LightPrint — Terms of Service Intelligence</title>
+  <meta name="description" content="Clean, accessible dashboard auditing Terms of Service agreements and exposing hidden legal traps.">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <a href="#main-content" class="skip-link">Skip to main content [Enter]</a>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
 
-  <!-- Masthead -->
-  <header class="site-masthead">
-    <div class="container">
-      <div class="masthead-meta-top">
-        <span>PUBLIC DISPATCH // REGISTRY NO. 2026-API</span>
-        <span id="currentDate">VOL. I</span>
-        <span>WATCHDOG INITIATIVE</span>
-      </div>
-
-      <div class="masthead-inner">
-        <div>
-          <h1 class="publication-title">LIGHTPRINT</h1>
-          <p class="publication-subtitle">INDEPENDENT LEGAL AUDIT OF DIGITAL TERMS & PRIVACY POLICIES</p>
+  <div class="app-shell">
+    <!-- Left Sidebar (Ref: Image 2) -->
+    <aside class="app-sidebar">
+      <div>
+        <div class="sidebar-logo">
+          <div class="logo-badge">LP</div>
+          <span class="logo-text">LightPrint</span>
         </div>
 
-        <div class="header-controls">
-          <div class="node-stamp" title="Connected application server node">
-            SYS_NODE: <strong id="nodeName">CONNECTING...</strong>
+        <ul class="sidebar-menu">
+          <li><a href="#dashboard" class="menu-item active"><span class="menu-icon">📊</span> Dashboard</a></li>
+          <li><a href="#services-table" class="menu-item"><span class="menu-icon">📋</span> Terms Index</a></li>
+          <li><a href="#clause-scanner" class="menu-item"><span class="menu-icon">⚡</span> Clause Scanner</a></li>
+          <li><a href="#cluster-nodes" class="menu-item"><span class="menu-icon">🌐</span> Cluster Nodes</a></li>
+          <li><a href="#settings" class="menu-item"><span class="menu-icon">⚙️</span> Settings</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-user">
+        <div class="user-avatar">BD</div>
+        <div class="user-info">
+          <span class="user-name">B. Dushime</span>
+          <span class="user-email">b.dushime1@alustudent.com</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="app-main">
+      <!-- Top Navigation Bar -->
+      <header class="app-topbar">
+        <div class="topbar-left">
+          <h1 class="topbar-greeting">Welcome, Auditor!</h1>
+          <div class="topbar-search">
+            <span class="search-ico">🔍</span>
+            <input 
+              type="text" 
+              id="globalSearchInput" 
+              placeholder="Search platforms (Spotify, Reddit)..."
+              autocomplete="off"
+            >
           </div>
-          <button type="button" id="themeToggle" class="btn-toggle" aria-label="Toggle visual contrast theme">
-            [<span id="themeLabel">THEME: DARK</span>]
+        </div>
+
+        <div class="topbar-right">
+          <div class="pill-node" title="Active application node">
+            <span class="dot-pulse"></span>
+            Node: <strong id="nodeName">Web01</strong>
+          </div>
+          <button type="button" id="themeToggle" class="btn-pill-dark" aria-label="Toggle visual theme">
+            <span id="themeIcon">🌙</span> <span id="themeLabel">Dark</span>
           </button>
         </div>
-      </div>
-    </div>
-  </header>
+      </header>
 
-  <main id="main-content" class="container">
-    <!-- Dispatch Lead / Hero -->
-    <section class="dispatch-hero">
-      <p class="hero-lead-in">SPECIAL INVESTIGATION // DATA SOVEREIGNTY</p>
-      <h2 class="hero-headline">The 50-Page Fine Print Is Engineered to Be Signed, Never Read.</h2>
-      <p class="hero-abstract">
-        Corporate legal departments intentionally draft agreements exceeding 20,000 words to obscure binding arbitration clauses, 
-        perpetual copyright licenses, and advertising surveillance. LightPrint pulls verified audits from the public 
-        <strong>ToS;DR REST API</strong> to illuminate predatory contracts.
-      </p>
+      <main id="main-content" class="dashboard-content">
+        <!-- 3 KPI Cards Strip (Ref: Image 2) -->
+        <section class="kpi-strip">
+          <div class="kpi-card pink">
+            <div class="kpi-icon-box">📄</div>
+            <div>
+              <p class="kpi-label">Platforms Indexed</p>
+              <h2 class="kpi-value">10,290+</h2>
+            </div>
+          </div>
 
-      <!-- Archival Search Box -->
-      <form id="searchForm" role="search" onsubmit="return false;">
-        <label for="searchInput" class="sr-only">Query company or platform database</label>
-        <div class="catalog-search-wrap">
-          <input 
-            type="text" 
-            id="searchInput" 
-            class="search-field"
-            placeholder="Search platform index (e.g., YouTube, Spotify, Reddit, Steam, Discord)..."
-            autocomplete="off"
-            spellcheck="false"
-          >
-          <button type="button" id="clearBtn" class="btn-clear" aria-label="Clear current query" hidden>[CLEAR]</button>
-          <button type="submit" id="searchBtn" class="btn-search">Search Database</button>
-        </div>
-      </form>
+          <div class="kpi-card blue">
+            <div class="kpi-icon-box">🛡️</div>
+            <div>
+              <p class="kpi-label">Predatory Ratio</p>
+              <h2 class="kpi-value">71% Flagged</h2>
+            </div>
+          </div>
 
-      <!-- Quick Index Shortcuts -->
-      <div class="index-shortcuts" aria-label="Index references">
-        <span class="index-label">Index References:</span>
-        <button type="button" class="shortcut-tag" data-query="YouTube">[ YouTube ]</button>
-        <button type="button" class="shortcut-tag" data-query="Spotify">[ Spotify ]</button>
-        <button type="button" class="shortcut-tag" data-query="Reddit">[ Reddit ]</button>
-        <button type="button" class="shortcut-tag" data-query="Discord">[ Discord ]</button>
-        <button type="button" class="shortcut-tag" data-query="Steam">[ Steam ]</button>
-        <button type="button" class="shortcut-tag" data-query="RiseUp">[ RiseUp ]</button>
-        <button type="button" class="shortcut-tag" data-query="DuckDuckGo">[ DuckDuckGo ]</button>
-      </div>
-    </section>
+          <div class="kpi-card purple">
+            <div class="kpi-icon-box">⚡</div>
+            <div>
+              <p class="kpi-label">Load Balancer (Lb01)</p>
+              <h2 class="kpi-value">Web01 / Web02</h2>
+            </div>
+          </div>
+        </section>
 
-    <!-- Status / Notification -->
-    <div id="statusBanner" class="audit-banner" role="status" aria-live="polite" hidden></div>
+        <!-- Status Notification Toast -->
+        <div id="statusBanner" class="status-toast info" role="status" aria-live="polite" hidden></div>
 
-    <!-- Toolbar: Filters and Sorting -->
-    <section class="audit-toolbar">
-      <div class="filter-group" role="group" aria-label="Filter dossiers by grade">
-        <span class="toolbar-heading">Classification:</span>
-        <button type="button" class="filter-btn active" data-grade="ALL">[ ALL ]</button>
-        <button type="button" class="filter-btn" data-grade="A">[ GRADE A ]</button>
-        <button type="button" class="filter-btn" data-grade="B">[ GRADE B ]</button>
-        <button type="button" class="filter-btn" data-grade="C">[ GRADE C ]</button>
-        <button type="button" class="filter-btn" data-grade="D">[ GRADE D ]</button>
-        <button type="button" class="filter-btn" data-grade="E">[ GRADE E : PREDATORY ]</button>
-      </div>
+        <!-- Quick Platform Search Banner -->
+        <section class="search-banner">
+          <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <h2 class="search-banner-title">Search Terms of Service Database</h2>
+            <span style="font-size: 0.82rem; color: var(--text-faint);">Powered by ToS;DR REST API</span>
+          </div>
 
-      <div>
-        <label for="sortSelect" class="sr-only">Sort dossiers</label>
-        <select id="sortSelect" class="sort-dropdown">
-          <option value="worst-first">SORT: WORST PRIVACY FIRST (E → A)</option>
-          <option value="best-first">SORT: BEST PRIVACY FIRST (A → E)</option>
-          <option value="name-az">SORT: ALPHABETICAL (A → Z)</option>
-        </select>
-      </div>
-    </section>
+          <form id="searchForm" class="search-input-group" role="search" onsubmit="return false;">
+            <input 
+              type="text" 
+              id="searchInput" 
+              placeholder="Enter service name (e.g. YouTube, Discord, Steam, TikTok)..." 
+              autocomplete="off"
+            >
+            <button type="button" id="clearBtn" class="btn-pill-dark" style="background-color: var(--bg-app); color: var(--text-muted); border: 1px solid var(--border-subtle);" hidden>Clear</button>
+            <button type="submit" id="searchBtn" class="btn-action-primary">Search</button>
+          </form>
 
-    <!-- Catalog Results Section -->
-    <section>
-      <div class="dossier-meta-row">
-        <h3 id="resultsTitle" style="font-size: 1.15rem; font-weight: 800; text-transform: uppercase;">AUDIT DOSSIERS</h3>
-        <span id="resultsCount" class="meta-count">CATALOGING RECORDS...</span>
-      </div>
+          <div class="quick-chips-row">
+            <span style="color: var(--text-faint); margin-right: 0.2rem;">Quick search:</span>
+            <button type="button" class="chip-pill" data-query="YouTube">YouTube</button>
+            <button type="button" class="chip-pill" data-query="Spotify">Spotify</button>
+            <button type="button" class="chip-pill" data-query="Reddit">Reddit</button>
+            <button type="button" class="chip-pill" data-query="Discord">Discord</button>
+            <button type="button" class="chip-pill" data-query="Steam">Steam</button>
+            <button type="button" class="chip-pill" data-query="DuckDuckGo">DuckDuckGo</button>
+          </div>
+        </section>
 
-      <div id="servicesGrid" class="dossier-grid" aria-live="polite">
-        <!-- Injected via app.js -->
-      </div>
-    </section>
+        <!-- Clean Data Table Card (Ref: Image 2 Medication Tracker) -->
+        <section id="services-table" class="table-card">
+          <div class="table-header-row">
+            <div class="table-title-area">
+              <h2 id="resultsTitle" class="table-main-title">Platform Privacy Audits</h2>
+              <span id="resultsCount" class="badge-tag-count">7 items</span>
+            </div>
 
-    <!-- Contract Redaction & Scanner Terminal -->
-    <section class="scanner-dossier">
-      <div class="terminal-header">
-        <p class="terminal-label">HEURISTIC PARSING PROTOCOL // REGEX CLASSIFIER</p>
-        <h3 class="terminal-title">Unlisted Contract & Lease Clause Scanner</h3>
-        <p style="font-size: 0.95rem; color: var(--text-muted); margin-top: 0.35rem;">
-          Evaluating an unindexed campus housing lease, employment agreement, or niche mobile app? 
-          Paste a contract excerpt below to detect high-risk legal traps.
+            <!-- Grade Filter Pills -->
+            <div class="grade-tabs-bar" role="group" aria-label="Filter platforms by privacy grade">
+              <button type="button" class="grade-tab-btn active" data-grade="ALL">All</button>
+              <button type="button" class="grade-tab-btn" data-grade="A">Grade A</button>
+              <button type="button" class="grade-tab-btn" data-grade="B">Grade B</button>
+              <button type="button" class="grade-tab-btn" data-grade="C">Grade C</button>
+              <button type="button" class="grade-tab-btn" data-grade="D">Grade D</button>
+              <button type="button" class="grade-tab-btn" data-grade="E">Grade E (Worst)</button>
+            </div>
+
+            <div>
+              <label for="sortSelect" class="sr-only">Sort table</label>
+              <select id="sortSelect" class="sort-select-clean">
+                <option value="worst-first">Worst Privacy First (E → A)</option>
+                <option value="best-first">Best Privacy First (A → E)</option>
+                <option value="name-az">Name (A to Z)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Data Table -->
+          <div class="data-table-wrap">
+            <table class="clean-table" aria-live="polite">
+              <thead>
+                <tr>
+                  <th>Platform</th>
+                  <th>Privacy Grade</th>
+                  <th>Status</th>
+                  <th>Key Summary</th>
+                  <th style="text-align: right;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="servicesTableBody">
+                <!-- Injected via app.js -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Live Clause Scanner Card -->
+        <section id="clause-scanner" class="scanner-card-modern">
+          <div class="scanner-title-area">
+            <h3>Custom Agreement Scanner <span style="font-size: 0.78rem; font-weight: 600; color: var(--primary); background: var(--primary-soft); padding: 0.2rem 0.5rem; border-radius: var(--radius-pill); margin-left: 0.5rem;">Regex Engine</span></h3>
+            <p>Paste an unindexed campus housing lease, mobile app agreement, or fine print snippet to run instant heuristic trap detection.</p>
+          </div>
+
+          <div class="preset-strip">
+            <span style="font-size: 0.8rem; color: var(--text-faint);">Try sample:</span>
+            <button type="button" class="preset-tag-btn" data-preset="arbitration">Forced Arbitration</button>
+            <button type="button" class="preset-tag-btn" data-preset="unilateral">Change Without Notice</button>
+            <button type="button" class="preset-tag-btn" data-preset="copyright">Perpetual Content License</button>
+            <button type="button" class="preset-tag-btn" data-preset="sharing">Data Sharing with Third Parties</button>
+          </div>
+
+          <div>
+            <textarea 
+              id="scannerInput" 
+              class="scanner-textarea" 
+              rows="4" 
+              placeholder="Paste contract terms or fine print paragraph here..."
+            ></textarea>
+
+            <div class="scanner-btn-row">
+              <button type="button" id="scanBtn" class="btn-action-primary">Scan For Traps</button>
+              <button type="button" id="clearScannerBtn" class="btn-table-action">Clear</button>
+            </div>
+          </div>
+
+          <div id="scannerResults" class="verdict-box" hidden>
+            <!-- Injected via app.js -->
+          </div>
+        </section>
+      </main>
+
+      <!-- Clean Footer -->
+      <footer class="app-footer">
+        <p>
+          <strong>LightPrint</strong> — Distributed Web Application for <em>Playing Around with APIs</em>. 
+          Architecture: <strong>Web01</strong> & <strong>Web02</strong> behind <strong>Lb01</strong> | 
+          Data source: <a href="https://tosdr.org" target="_blank" rel="noopener" style="color: var(--primary); text-decoration: none;">ToS;DR API</a>
         </p>
-      </div>
-
-      <div class="terminal-presets">
-        <span style="color: var(--text-faint);">Insert Verified Sample:</span>
-        <button type="button" class="btn-sample" data-preset="arbitration">[ Forced Arbitration Waiver ]</button>
-        <button type="button" class="btn-sample" data-preset="unilateral">[ Unilateral Alteration Without Notice ]</button>
-        <button type="button" class="btn-sample" data-preset="copyright">[ Perpetual Content License ]</button>
-        <button type="button" class="btn-sample" data-preset="sharing">[ Third-Party Data Sale ]</button>
-      </div>
-
-      <div>
-        <label for="scannerInput" class="sr-only">Raw agreement text to scan</label>
-        <textarea 
-          id="scannerInput" 
-          class="typewriter-textarea" 
-          rows="5" 
-          placeholder="// Paste fine print clause, terms excerpt, or agreement paragraph here..."
-        ></textarea>
-
-        <div class="terminal-actions">
-          <button type="button" id="scanBtn" class="btn-execute">Execute Audit</button>
-          <button type="button" id="clearScannerBtn" class="btn-reset">Clear Buffer</button>
-        </div>
-      </div>
-
-      <div id="scannerResults" class="audit-verdict" hidden>
-        <!-- Injected via app.js -->
-      </div>
-    </section>
-  </main>
-
-  <!-- Dossier Inspection Docket Modal -->
-  <div id="detailModal" class="docket-backdrop" hidden role="dialog" aria-modal="true" aria-labelledby="modalServiceName">
-    <div class="docket-window">
-      <div class="docket-header">
-        <div>
-          <p id="modalServiceUrls" class="docket-docket-no">DOSSIER REF: #0000</p>
-          <h2 id="modalServiceName" class="docket-title">Service Title</h2>
-        </div>
-        <div style="display: flex; align-items: center; gap: 0.75rem;">
-          <span id="modalGradeBadge" class="grade-stamp">GRADE -</span>
-          <button type="button" id="closeModalBtn" class="btn-close-docket" aria-label="Close docket">[✕]</button>
-        </div>
-      </div>
-
-      <div class="docket-body">
-        <div class="docket-filter-tabs">
-          <button type="button" class="docket-tab active" data-tab="all">[ ALL CLAUSES (<span id="countAll">0</span>) ]</button>
-          <button type="button" class="docket-tab" data-tab="bad">[ RED FLAGS (<span id="countBad">0</span>) ]</button>
-          <button type="button" class="docket-tab" data-tab="neutral">[ NEUTRAL (<span id="countNeutral">0</span>) ]</button>
-          <button type="button" class="docket-tab" data-tab="good">[ EXEMPLARY (<span id="countGood">0</span>) ]</button>
-        </div>
-
-        <div id="modalPointsList">
-          <!-- Injected via app.js -->
-        </div>
-      </div>
+      </footer>
     </div>
   </div>
 
-  <!-- Colophon / Footer -->
-  <footer class="site-colophon">
-    <div class="container">
-      <p>
-        <strong>LIGHTPRINT</strong> // A Distributed Systems Exercise in API Orchestration & Public Intelligence.
-      </p>
-      <p style="margin-top: 0.4rem; color: var(--text-faint);">
-        Multi-Tier Cluster: <strong>Web01</strong> & <strong>Web02</strong> Load Balanced by <strong>Lb01</strong> | 
-        Data Source: <a href="https://tosdr.org" target="_blank" rel="noopener">ToS;DR Open API</a> | 
-        Author: B. Dushime (<a href="mailto:b.dushime1@alustudent.com">b.dushime1@alustudent.com</a>)
-      </p>
+  <!-- Inspection Modal (Strictly Hidden by Default) -->
+  <div id="detailModal" class="modal-backdrop" hidden role="dialog" aria-modal="true" aria-labelledby="modalServiceName">
+    <div class="modal-card">
+      <div class="modal-header-clean">
+        <div class="modal-header-titles">
+          <p id="modalServiceUrls" style="font-size: 0.78rem; color: var(--text-faint);">DOSSIER #0000</p>
+          <h2 id="modalServiceName">Platform Details</h2>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <span id="modalGradeBadge" class="grade-pill-soft grade-NA">Grade -</span>
+          <button type="button" id="closeModalBtn" class="modal-close-icon" aria-label="Close dialog">✕</button>
+        </div>
+      </div>
+
+      <div class="modal-tabs-row">
+        <button type="button" class="modal-tab-pill active" data-tab="all">All Clauses (<span id="countAll">0</span>)</button>
+        <button type="button" class="modal-tab-pill" data-tab="bad">Red Flags (<span id="countBad">0</span>)</button>
+        <button type="button" class="modal-tab-pill" data-tab="neutral">Neutral (<span id="countNeutral">0</span>)</button>
+        <button type="button" class="modal-tab-pill" data-tab="good">Good (<span id="countGood">0</span>)</button>
+      </div>
+
+      <div id="modalPointsList" class="modal-body-scroll">
+        <!-- Injected via app.js -->
+      </div>
     </div>
-  </footer>
+  </div>
 
   <script src="app.js"></script>
 </body>

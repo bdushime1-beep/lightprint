@@ -1,6 +1,6 @@
 // ==========================================================================
-// LightPrint — Client-Side Application Logic
-// Architecture: Vanilla ES6 Modules / DOM Orchestration / Regex Scanner
+// LightPrint — Frontend Dashboard Engine (Ref: Clean Modern Dashboard)
+// Architecture: Vanilla ES6 Modules / Table Rendering / Heuristic Scanner
 // ==========================================================================
 
 const state = {
@@ -21,17 +21,19 @@ const PRESET_SNIPPETS = {
 };
 
 // DOM References
+const globalSearchInput = document.getElementById("globalSearchInput");
 const searchForm = document.getElementById("searchForm");
 const searchInput = document.getElementById("searchInput");
 const clearBtn = document.getElementById("clearBtn");
-const servicesGrid = document.getElementById("servicesGrid");
+const servicesTableBody = document.getElementById("servicesTableBody");
 const resultsCount = document.getElementById("resultsCount");
 const resultsTitle = document.getElementById("resultsTitle");
 const statusBanner = document.getElementById("statusBanner");
 const sortSelect = document.getElementById("sortSelect");
-const filterButtons = document.querySelectorAll(".filter-btn");
+const gradeTabButtons = document.querySelectorAll(".grade-tab-btn");
 const nodeNameEl = document.getElementById("nodeName");
 const themeToggle = document.getElementById("themeToggle");
+const themeIcon = document.getElementById("themeIcon");
 const themeLabel = document.getElementById("themeLabel");
 
 // Modal References
@@ -41,7 +43,7 @@ const modalServiceName = document.getElementById("modalServiceName");
 const modalServiceUrls = document.getElementById("modalServiceUrls");
 const modalGradeBadge = document.getElementById("modalGradeBadge");
 const modalPointsList = document.getElementById("modalPointsList");
-const modalTabs = document.querySelectorAll(".docket-tab");
+const modalTabs = document.querySelectorAll(".modal-tab-pill");
 const countAll = document.getElementById("countAll");
 const countBad = document.getElementById("countBad");
 const countNeutral = document.getElementById("countNeutral");
@@ -52,79 +54,113 @@ const scannerInput = document.getElementById("scannerInput");
 const scanBtn = document.getElementById("scanBtn");
 const clearScannerBtn = document.getElementById("clearScannerBtn");
 const scannerResults = document.getElementById("scannerResults");
-const presetButtons = document.querySelectorAll(".btn-sample");
+const presetButtons = document.querySelectorAll(".preset-tag-btn");
 
 // --------------------------------------------------------------------------
 // Initialization
 // --------------------------------------------------------------------------
 document.addEventListener("DOMContentLoaded", () => {
-  initTheme();
+  // Ensure modal is completely closed on initial boot
+  closeModal();
+
   setupEventListeners();
-  loadInitialDossiers();
+  loadInitialServices();
 });
 
 function setupEventListeners() {
-  // Search box input handling
-  searchInput.addEventListener("input", (e) => {
-    const val = e.target.value.trim();
-    clearBtn.hidden = val.length === 0;
-    clearTimeout(state.searchDebounceTimer);
-    if (val.length >= 2) {
-      state.searchDebounceTimer = setTimeout(() => performSearch(val), 300);
-    } else if (val.length === 0) {
-      loadInitialDossiers();
-    }
-  });
+  // Global search input in topbar
+  if (globalSearchInput) {
+    globalSearchInput.addEventListener("input", (e) => {
+      const val = e.target.value.trim();
+      if (searchInput) searchInput.value = val;
+      clearTimeout(state.searchDebounceTimer);
+      if (val.length >= 2) {
+        state.searchDebounceTimer = setTimeout(() => performSearch(val), 300);
+      } else if (val.length === 0) {
+        loadInitialServices();
+      }
+    });
+  }
 
-  clearBtn.addEventListener("click", () => {
-    searchInput.value = "";
-    clearBtn.hidden = true;
-    searchInput.focus();
-    loadInitialDossiers();
-  });
+  // Main banner search input
+  if (searchInput) {
+    searchInput.addEventListener("input", (e) => {
+      const val = e.target.value.trim();
+      if (globalSearchInput) globalSearchInput.value = val;
+      if (clearBtn) clearBtn.hidden = val.length === 0;
+      clearTimeout(state.searchDebounceTimer);
+      if (val.length >= 2) {
+        state.searchDebounceTimer = setTimeout(() => performSearch(val), 300);
+      } else if (val.length === 0) {
+        loadInitialServices();
+      }
+    });
+  }
 
-  searchForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const val = searchInput.value.trim();
-    if (val) performSearch(val);
-  });
+  if (clearBtn) {
+    clearBtn.addEventListener("click", () => {
+      if (searchInput) searchInput.value = "";
+      if (globalSearchInput) globalSearchInput.value = "";
+      clearBtn.hidden = true;
+      loadInitialServices();
+    });
+  }
 
-  // Quick reference tags
-  document.querySelectorAll(".shortcut-tag").forEach((btn) => {
+  if (searchForm) {
+    searchForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const val = searchInput ? searchInput.value.trim() : "";
+      if (val) performSearch(val);
+    });
+  }
+
+  // Quick chips
+  document.querySelectorAll(".chip-pill").forEach((btn) => {
     btn.addEventListener("click", () => {
       const q = btn.dataset.query;
-      searchInput.value = q;
-      clearBtn.hidden = false;
+      if (searchInput) searchInput.value = q;
+      if (globalSearchInput) globalSearchInput.value = q;
+      if (clearBtn) clearBtn.hidden = false;
       performSearch(q);
     });
   });
 
-  // Grade filter buttons
-  filterButtons.forEach((btn) => {
+  // Grade filter tabs
+  gradeTabButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
-      filterButtons.forEach((b) => b.classList.remove("active"));
+      gradeTabButtons.forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
       state.activeGrade = btn.dataset.grade;
-      renderServices();
+      renderTable();
     });
   });
 
-  // Sorting
-  sortSelect.addEventListener("change", (e) => {
-    state.sortMode = e.target.value;
-    renderServices();
-  });
+  // Sort selector
+  if (sortSelect) {
+    sortSelect.addEventListener("change", (e) => {
+      state.sortMode = e.target.value;
+      renderTable();
+    });
+  }
 
   // Theme toggle
-  themeToggle.addEventListener("click", toggleTheme);
+  if (themeToggle) {
+    themeToggle.addEventListener("click", toggleTheme);
+  }
 
   // Modal interactions
-  closeModalBtn.addEventListener("click", closeModal);
-  detailModal.addEventListener("click", (e) => {
-    if (e.target === detailModal) closeModal();
-  });
+  if (closeModalBtn) {
+    closeModalBtn.addEventListener("click", closeModal);
+  }
+  if (detailModal) {
+    detailModal.addEventListener("click", (e) => {
+      if (e.target === detailModal) closeModal();
+    });
+  }
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && !detailModal.hidden) closeModal();
+    if (e.key === "Escape" && detailModal && !detailModal.hidden) {
+      closeModal();
+    }
   });
 
   modalTabs.forEach((tab) => {
@@ -137,17 +173,21 @@ function setupEventListeners() {
   });
 
   // Scanner actions
-  scanBtn.addEventListener("click", runClauseScanner);
-  clearScannerBtn.addEventListener("click", () => {
-    scannerInput.value = "";
-    scannerResults.hidden = true;
-    scannerResults.innerHTML = "";
-  });
+  if (scanBtn) scanBtn.addEventListener("click", runClauseScanner);
+  if (clearScannerBtn) {
+    clearScannerBtn.addEventListener("click", () => {
+      if (scannerInput) scannerInput.value = "";
+      if (scannerResults) {
+        scannerResults.hidden = true;
+        scannerResults.innerHTML = "";
+      }
+    });
+  }
 
   presetButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
       const presetKey = btn.dataset.preset;
-      if (PRESET_SNIPPETS[presetKey]) {
+      if (PRESET_SNIPPETS[presetKey] && scannerInput) {
         scannerInput.value = PRESET_SNIPPETS[presetKey];
         runClauseScanner();
       }
@@ -156,11 +196,11 @@ function setupEventListeners() {
 }
 
 // --------------------------------------------------------------------------
-// API Queries
+// API Client
 // --------------------------------------------------------------------------
 async function performSearch(query) {
-  showBanner(`QUERYING TOS;DR REGISTRY FOR "${query.toUpperCase()}"...`, "info");
-  resultsCount.textContent = "QUERY IN PROGRESS...";
+  showToast(`Searching ToS;DR database for "${query}"...`, "info");
+  if (resultsCount) resultsCount.textContent = "Querying...";
 
   try {
     const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
@@ -168,23 +208,23 @@ async function performSearch(query) {
 
     if (!res.ok) {
       const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.error || `Server status ${res.status}`);
+      throw new Error(errData.error || `Server returned ${res.status}`);
     }
 
     const data = await res.json();
     state.services = data.services || [];
-    hideBanner();
-    resultsTitle.textContent = `SEARCH RESULTS: "${query.toUpperCase()}"`;
-    renderServices();
+    hideToast();
+    if (resultsTitle) resultsTitle.textContent = `Search Results: "${query}"`;
+    renderTable();
   } catch (err) {
-    showBanner(`API ERROR: ${err.message}`, "error");
-    resultsCount.textContent = "COMMUNICATION FAILURE";
+    showToast(`Search failed: ${err.message}`, "error");
+    if (resultsCount) resultsCount.textContent = "Communication error";
   }
 }
 
-async function loadInitialDossiers() {
-  resultsTitle.textContent = "INDEXED DOSSIERS";
-  resultsCount.textContent = "SYNCHRONIZING WITH CLUSTER...";
+async function loadInitialServices() {
+  if (resultsTitle) resultsTitle.textContent = "Platform Privacy Audits";
+  if (resultsCount) resultsCount.textContent = "Loading...";
 
   try {
     const res = await fetch("/api/featured");
@@ -193,40 +233,40 @@ async function loadInitialDossiers() {
     if (res.ok) {
       const data = await res.json();
       state.services = data.services || [];
-      renderServices();
+      renderTable();
       return;
     }
   } catch {
-    // If backend fetch fails, fallback to local search
+    // If /api/featured is unavailable, fallback to search
   }
 
-  // Fallback direct search if /api/featured is unavailable
   performSearch("Spotify");
 }
 
 async function fetchServiceDetails(serviceId) {
-  showBanner(`AUDITING DOSSIER #${serviceId}...`, "info");
+  showToast(`Auditing platform details #${serviceId}...`, "info");
   try {
     const res = await fetch(`/api/service?id=${encodeURIComponent(serviceId)}`);
     updateNodeBadge(res.headers.get("X-Server-Node"));
 
     if (!res.ok) {
-      throw new Error(`Upstream rejected query (${res.status})`);
+      throw new Error(`Upstream returned ${res.status}`);
     }
 
     const data = await res.json();
-    hideBanner();
+    hideToast();
     return data.service || null;
   } catch (err) {
-    showBanner(`AUDIT FAILED: ${err.message}`, "error");
+    showToast(`Audit failed: ${err.message}`, "error");
     return null;
   }
 }
 
 // --------------------------------------------------------------------------
-// Rendering Logic
+// Table Rendering
 // --------------------------------------------------------------------------
-function renderServices() {
+function renderTable() {
+  if (!servicesTableBody) return;
   let list = [...state.services];
 
   // 1. Grade filtering
@@ -244,46 +284,60 @@ function renderServices() {
     list.sort((a, b) => a.name.localeCompare(b.name));
   }
 
-  resultsCount.textContent = `${list.length} OF ${state.services.length} DOSSIERS ACTIVE`;
+  if (resultsCount) {
+    resultsCount.textContent = `${list.length} item${list.length === 1 ? "" : "s"}`;
+  }
 
   if (list.length === 0) {
-    servicesGrid.innerHTML = `
-      <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; border: 1px dashed var(--border-ink);">
-        <p style="font-family: var(--font-mono); font-size: 1rem; font-weight: 700;">// NO RECORDS FOUND MATCHING SPECIFIED CRITERIA</p>
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.4rem;">Select [ ALL ] or enter a different company name.</p>
-      </div>
+    servicesTableBody.innerHTML = `
+      <tr>
+        <td colspan="5" style="text-align: center; padding: 3rem 1rem; color: var(--text-muted);">
+          <p style="font-weight: 600; font-size: 0.95rem;">No platforms match the selected filter</p>
+          <p style="font-size: 0.82rem; color: var(--text-faint); margin-top: 0.25rem;">Try selecting "All" or entering a different search term.</p>
+        </td>
+      </tr>
     `;
     return;
   }
 
-  servicesGrid.innerHTML = list.map((svc) => {
+  servicesTableBody.innerHTML = list.map((svc) => {
     const grade = extractGrade(svc);
     const domain = (svc.urls && svc.urls[0]) ? svc.urls[0] : "";
-    const summary = svc.summary || (svc.is_comprehensively_reviewed ? "Subject to comprehensive legal audit by privacy researchers." : "Community monitored platform; baseline telemetry audited.");
+    const summary = svc.summary || (svc.is_comprehensively_reviewed ? "Subject to comprehensive review by legal researchers." : "Community monitored platform; baseline terms indexed.");
+    const initial = (svc.name && svc.name[0]) ? svc.name[0].toUpperCase() : "P";
 
     return `
-      <article class="dossier-card" data-id="${svc.id}">
-        <div>
-          <div class="card-index-top">
+      <tr>
+        <td>
+          <div class="service-cell">
+            <div class="service-icon-box">${initial}</div>
             <div>
-              <h4 class="service-title">${escapeHtml(svc.name)}</h4>
-              ${domain ? `<a href="https://${escapeHtml(domain)}" target="_blank" rel="noopener" class="service-domain">${escapeHtml(domain)} ↗</a>` : ""}
+              <span class="service-name-text">${escapeHtml(svc.name)}</span>
+              ${domain ? `<span class="service-domain-text">${escapeHtml(domain)}</span>` : ""}
             </div>
-            <span class="grade-stamp grade-${grade.replace("/", "")}">
-              GRADE [ ${grade} ]
-            </span>
           </div>
-
-          <p class="card-body-text">${escapeHtml(summary)}</p>
-        </div>
-
-        <div class="card-audit-footer">
-          <span>REF: #${svc.id}</span>
-          <button type="button" class="btn-open-dossier" onclick="inspectService('${svc.id}')">
-            View Audit Dossier →
+        </td>
+        <td>
+          <span class="grade-pill-soft grade-${grade.replace("/", "")}">
+            Grade ${grade}
+          </span>
+        </td>
+        <td>
+          <span style="font-size: 0.82rem; color: var(--text-muted); font-weight: 500;">
+            ${svc.is_comprehensively_reviewed ? "✅ Reviewed" : "ℹ️ Monitored"}
+          </span>
+        </td>
+        <td style="max-width: 380px;">
+          <span style="font-size: 0.84rem; color: var(--text-muted); line-height: 1.4; display: block;">
+            ${escapeHtml(summary)}
+          </span>
+        </td>
+        <td style="text-align: right;">
+          <button type="button" class="btn-table-action" onclick="inspectService('${svc.id}')">
+            View Details →
           </button>
-        </div>
-      </article>
+        </td>
+      </tr>
     `;
   }).join("");
 }
@@ -299,10 +353,14 @@ window.inspectService = async function(serviceId) {
   state.activeTab = "all";
 
   const grade = extractGrade(fullData);
-  modalServiceName.textContent = fullData.name || "LEGAL AUDIT DOSSIER";
-  modalServiceUrls.textContent = `DOSSIER REF: #${fullData.id || serviceId} // ${fullData.urls ? fullData.urls.join(", ") : "NO DOMAIN RECORDED"}`;
-  modalGradeBadge.textContent = `GRADE [ ${grade} ]`;
-  modalGradeBadge.className = `grade-stamp grade-${grade.replace("/", "")}`;
+  if (modalServiceName) modalServiceName.textContent = fullData.name || "Platform Details";
+  if (modalServiceUrls) {
+    modalServiceUrls.textContent = `DOSSIER #${fullData.id || serviceId} • ${(fullData.urls && fullData.urls.length) ? fullData.urls.join(", ") : "No domain"}`;
+  }
+  if (modalGradeBadge) {
+    modalGradeBadge.textContent = `Grade ${grade}`;
+    modalGradeBadge.className = `grade-pill-soft grade-${grade.replace("/", "")}`;
+  }
 
   modalTabs.forEach(t => t.classList.toggle("active", t.dataset.tab === "all"));
   
@@ -311,18 +369,23 @@ window.inspectService = async function(serviceId) {
   const neutralCount = points.filter(p => p.case?.classification === "neutral").length;
   const goodCount = points.filter(p => p.case?.classification === "good").length;
 
-  countAll.textContent = points.length;
-  countBad.textContent = badCount;
-  countNeutral.textContent = neutralCount;
-  countGood.textContent = goodCount;
+  if (countAll) countAll.textContent = points.length;
+  if (countBad) countBad.textContent = badCount;
+  if (countNeutral) countNeutral.textContent = neutralCount;
+  if (countGood) countGood.textContent = goodCount;
 
   renderModalPoints();
-  detailModal.hidden = false;
+
+  // Safely show modal
+  if (detailModal) {
+    detailModal.removeAttribute("hidden");
+    detailModal.style.display = "flex";
+  }
   document.body.style.overflow = "hidden";
 };
 
 function renderModalPoints() {
-  if (!state.activeModalService) return;
+  if (!modalPointsList || !state.activeModalService) return;
   const allPoints = state.activeModalService.points || [];
   let filtered = allPoints;
 
@@ -335,7 +398,7 @@ function renderModalPoints() {
   }
 
   if (filtered.length === 0) {
-    modalPointsList.innerHTML = `<p style="font-family: var(--font-mono); text-align: center; color: var(--text-muted); padding: 2.5rem 0;">// NO RECORDED CLAUSES IN THIS CATEGORY</p>`;
+    modalPointsList.innerHTML = `<p style="text-align: center; color: var(--text-faint); padding: 2.5rem 0; font-size: 0.9rem;">No recorded clauses under this tab.</p>`;
     return;
   }
 
@@ -346,20 +409,25 @@ function renderModalPoints() {
     const quote = pt.quoteText || "";
 
     return `
-      <div class="clause-item ${classification}">
-        <div class="clause-header">
-          <h5 class="clause-headline">${escapeHtml(caseTitle)}</h5>
-          <span class="clause-stamp ${classification}">[ ${classification} ]</span>
+      <div class="clause-card-mini ${classification}">
+        <div class="clause-card-top">
+          <h4>${escapeHtml(caseTitle)}</h4>
+          <span class="grade-pill-soft grade-${classification === 'bad' || classification === 'blocker' ? 'E' : classification === 'good' ? 'A' : 'NA'}" style="font-size: 0.72rem; padding: 0.15rem 0.5rem;">
+            ${classification}
+          </span>
         </div>
-        ${caseDesc ? `<p class="clause-analysis">${escapeHtml(caseDesc)}</p>` : ""}
-        ${quote ? `<p class="clause-verbatim">VERBATIM CONTRACT: “${escapeHtml(quote)}”</p>` : ""}
+        ${caseDesc ? `<p class="clause-card-desc">${escapeHtml(caseDesc)}</p>` : ""}
+        ${quote ? `<p class="clause-card-quote">“${escapeHtml(quote)}”</p>` : ""}
       </div>
     `;
   }).join("");
 }
 
 function closeModal() {
-  detailModal.hidden = true;
+  if (detailModal) {
+    detailModal.setAttribute("hidden", "true");
+    detailModal.style.display = "none";
+  }
   document.body.style.overflow = "";
 }
 
@@ -367,44 +435,45 @@ function closeModal() {
 // Clause Scanner (Regex Engine)
 // --------------------------------------------------------------------------
 function runClauseScanner() {
+  if (!scannerInput || !scannerResults) return;
   const text = scannerInput.value.trim();
   if (!text) {
-    showBanner("INPUT REQUIRED: PLEASE PASTE A CONTRACT EXCERPT BEFORE EXECUTING AUDIT.", "error");
+    showToast("Please paste contract terms into the box before scanning.", "error");
     return;
   }
 
   const rules = [
     {
       id: "arbitration",
-      name: "FORCED ARBITRATION & CLASS ACTION WAIVER",
+      name: "Forced Arbitration & Class Action Waiver",
       severity: "danger",
       pattern: /\b(arbitration|class\s+action\s+waiver|waive\s+(any\s+)?right\s+to\s+bring\s+a\s+class|disputes?\s+settled\s+by\s+arbitration)\b/i,
-      desc: "Forfeits constitutional access to civil court and prohibits collective class action litigation against the corporation."
+      desc: "Forfeits constitutional rights to civil court and prohibits collective class action litigation against the corporation."
     },
     {
       id: "unilateral",
-      name: "UNILATERAL ALTERATION WITHOUT DIRECT NOTICE",
+      name: "Unilateral Alteration Without Direct Notice",
       severity: "warning",
       pattern: /\b(modify|change|alter|update|amend)\s+these\s+terms\s+(at\s+any\s+time|without\s+(prior\s+)?notice)\b/i,
-      desc: "Grants the operator unilateral authority to alter contract stipulations without notifying users directly."
+      desc: "Grants the operator authority to alter contract stipulations at any time without notifying users directly."
     },
     {
       id: "copyright",
-      name: "PERPETUAL & IRREVOCABLE COPYRIGHT SEIZURE",
+      name: "Perpetual & Irrevocable Copyright Seizure",
       severity: "danger",
       pattern: /\b(perpetual|irrevocable|worldwide|royalty[- ]free)\s+(license|right)\b/i,
-      desc: "Grants permanent commercial licensing rights over user-created content, surviving account termination."
+      desc: "Grants permanent commercial licensing rights over user content, surviving account termination."
     },
     {
       id: "data-selling",
-      name: "THIRD-PARTY ADVERTISING DATA BROKERAGE",
+      name: "Third-Party Advertising Data Brokerage",
       severity: "danger",
       pattern: /\b(share|sell|transfer|disclose)\s+(your\s+)?(personal\s+)?data\s+to\s+third\s+parties\b/i,
       desc: "Authorizes distribution of telemetry, location, or user identifiers to commercial advertising exchanges."
     },
     {
       id: "as-is",
-      name: "DISCLAIMER OF ALL OPERATIONAL LIABILITY ('AS-IS')",
+      name: "Disclaimer of All Liability ('As-Is')",
       severity: "warning",
       pattern: /\b(as[- ]is\s+without\s+warranty|no\s+liability\s+for\s+damages|disclaim\s+all\s+warranties)\b/i,
       desc: "Total indemnity for system failures, data corruption, or unauthorized security breaches."
@@ -416,26 +485,26 @@ function runClauseScanner() {
   scannerResults.hidden = false;
   if (matched.length > 0) {
     const isDanger = matched.some(m => m.severity === "danger");
-    scannerResults.className = `audit-verdict ${isDanger ? "danger" : "warning"}`;
+    scannerResults.className = `verdict-box ${isDanger ? "danger" : "warning"}`;
     scannerResults.innerHTML = `
-      <p style="font-weight: 800; font-size: 0.95rem; margin-bottom: 0.5rem; text-transform: uppercase;">
-        ⚠ VERDICT: ${matched.length} PREDATORY LEGAL CLAUSE(S) IDENTIFIED
+      <p style="font-weight: 700; margin-bottom: 0.5rem; color: #991b1b;">
+        ⚠️ ${matched.length} High-Risk Legal Traps Detected in Text:
       </p>
-      <div style="margin-bottom: 0.8rem;">
-        ${matched.map(m => `<span class="redacted-tag">${m.name}</span>`).join("")}
+      <div style="margin-bottom: 0.75rem;">
+        ${matched.map(m => `<span class="trap-pill-badge">${m.name}</span>`).join("")}
       </div>
-      <ul style="list-style-type: square; margin-left: 1.2rem; line-height: 1.6; color: var(--text-muted);">
-        ${matched.map(m => `<li style="margin-bottom: 0.35rem;"><strong>${m.name}:</strong> ${m.desc}</li>`).join("")}
+      <ul style="list-style-type: disc; margin-left: 1.25rem; font-size: 0.85rem; color: #7f1d1d; line-height: 1.5;">
+        ${matched.map(m => `<li style="margin-bottom: 0.3rem;"><strong>${m.name}:</strong> ${m.desc}</li>`).join("")}
       </ul>
     `;
   } else {
-    scannerResults.className = "audit-verdict clean";
+    scannerResults.className = "verdict-box clean";
     scannerResults.innerHTML = `
-      <p style="font-weight: 800; color: var(--stamp-a); font-size: 0.95rem; text-transform: uppercase;">
-        ✓ AUDIT PASSED: ZERO STANDARD TRAPS DETECTED
+      <p style="font-weight: 700; color: #166534; margin-bottom: 0.25rem;">
+        ✅ Clean Excerpt: No Standard Predatory Traps Found
       </p>
-      <p style="color: var(--text-muted); margin-top: 0.3rem;">
-        The supplied excerpt contains no matching regex signatures for forced arbitration, copyright seizure, or unilateral alteration.
+      <p style="color: #14532d; font-size: 0.85rem;">
+        The supplied text contains no matching regex signatures for forced arbitration, copyright forfeiture, or unilateral change clauses.
       </p>
     `;
   }
@@ -454,18 +523,19 @@ function extractGrade(svc) {
 
 function updateNodeBadge(nodeId) {
   if (nodeId && nodeNameEl) {
-    nodeNameEl.textContent = nodeId.toUpperCase();
+    nodeNameEl.textContent = nodeId;
   }
 }
 
-function showBanner(message, type = "info") {
-  statusBanner.textContent = `// ${message}`;
-  statusBanner.className = `audit-banner ${type}`;
+function showToast(message, type = "info") {
+  if (!statusBanner) return;
+  statusBanner.textContent = message;
+  statusBanner.className = `status-toast ${type}`;
   statusBanner.hidden = false;
 }
 
-function hideBanner() {
-  statusBanner.hidden = true;
+function hideToast() {
+  if (statusBanner) statusBanner.hidden = true;
 }
 
 function escapeHtml(str) {
@@ -478,24 +548,10 @@ function escapeHtml(str) {
     .replace(/'/g, "&#039;");
 }
 
-function initTheme() {
-  const saved = localStorage.getItem("lightprint_theme") || "light";
-  document.documentElement.setAttribute("data-theme", saved);
-  updateThemeUi(saved);
-}
-
 function toggleTheme() {
   const current = document.documentElement.getAttribute("data-theme") || "light";
   const next = current === "light" ? "dark" : "light";
   document.documentElement.setAttribute("data-theme", next);
-  localStorage.setItem("lightprint_theme", next);
-  updateThemeUi(next);
-}
-
-function updateThemeUi(theme) {
-  if (theme === "dark") {
-    themeLabel.textContent = "THEME: DARK";
-  } else {
-    themeLabel.textContent = "THEME: LIGHT";
-  }
+  if (themeLabel) themeLabel.textContent = next === "dark" ? "Light" : "Dark";
+  if (themeIcon) themeIcon.textContent = next === "dark" ? "☀️" : "🌙";
 }
