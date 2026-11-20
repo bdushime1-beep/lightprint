@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.env
+.venv/
+env/
+venv/
+
+# System / IDE
+.DS_Store
+Thumbs.db
+.vscode/codepause-baselines.json
+
+# CodeVibe temporary artifacts
+codevibe-reports/*.tmp
