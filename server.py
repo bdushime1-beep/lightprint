@@ -11,6 +11,9 @@ PORT = int(os.environ.get("PORT", 3000))
 SERVER_NODE_ID = os.environ.get("SERVER_NODE_ID", "Web01")
 CACHE_TTL = 600  # 10 min cache to shield against ToS;DR 5 req/10s rate limit
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PUBLIC_DIR = os.path.join(BASE_DIR, "public")
+
 cache_store = {}
 
 def fetch_upstream_json(url):
@@ -32,7 +35,7 @@ def fetch_upstream_json(url):
 
 class LightPrintHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, directory="public", **kwargs)
+        super().__init__(*args, directory=PUBLIC_DIR, **kwargs)
 
     def end_headers(self):
         # Attach load balancer proof header and CORS
