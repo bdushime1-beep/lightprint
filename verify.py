@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-LightPrint — CodeVibe Report Verification Tool
+LightPrint - CodeVibe Report Verification Tool
 Mirrors the exact cryptographic canonicalization and compliance engine of codevibe-verify.js.
 
 Usage:
@@ -121,7 +121,7 @@ def verify_report(file_path):
     print("-" * 65)
     overall_pass = integrity_ok and auth_ok and own_ok and violations_ok
     if overall_pass:
-        print("\033[32mOVERALL VERDICT: ALL AUDIT CHECKS PASSED — 100% COMPLIANT\033[0m")
+        print("\033[32mOVERALL VERDICT: ALL AUDIT CHECKS PASSED - 100% COMPLIANT\033[0m")
     else:
         print("\033[31mOVERALL VERDICT: NON-COMPLIANT OR TAMPERED REPORT\033[0m")
     print("=" * 65 + "\n")

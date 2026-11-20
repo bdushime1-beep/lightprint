@@ -1,5 +1,5 @@
 // ==========================================================================
-// LightPrint — Fine Print & Terms of Service Reader
+// LightPrint - Fine Print & Terms of Service Reader
 // Architecture: Vanilla ES6 / DOM Controller / Heuristic Engine / Offline-Ready
 // ==========================================================================
 

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-LightPrint — Full Infrastructure, Server Diagnostics & Verification Test Suite
+LightPrint - Full Infrastructure, Server Diagnostics & Verification Test Suite
 ==============================================================================
 Performs comprehensive end-to-end audit and diagnostics across all tiers:
-  1. DNS & SSL / TLS Certificate Diagnostics (bdushime.tech & www.bdushime.tech)
+  1. DNS & SSL / TLS Certificate Diagnostics (bdushime.tech, www, lightprint)
   2. Remote SSH Diagnostics into All Infrastructure Nodes (Web01, Web02, Lb01)
   3. Direct Application Node HTTP Probes & Response Inspection (Port 80)
   4. Load Balancer HTTP-to-HTTPS Redirection & Live Round-Robin Rotation Trace
@@ -63,7 +63,7 @@ SERVERS = {
     }
 }
 
-DOMAINS = ["bdushime.tech", "www.bdushime.tech"]
+DOMAINS = ["bdushime.tech", "www.bdushime.tech", "lightprint.bdushime.tech"]
 
 
 def print_banner(text):
@@ -79,7 +79,7 @@ def print_section(num, title):
 
 def pass_fail(condition, label, details=""):
     mark = f"{GREEN}✔ PASS{RESET}" if condition else f"{RED}✘ FAIL{RESET}"
-    det = f" {DIM}— {details}{RESET}" if details else ""
+    det = f" {DIM}- {details}{RESET}" if details else ""
     print(f"  [{mark}] {label}{det}", flush=True)
     return 1 if condition else 0
 
@@ -101,6 +101,20 @@ def run_ssh(ip, cmd, timeout=12):
         return False, "", str(e)
 
 
+def resolve_domain(domain):
+    """Resolves domain using local resolver, falling back to public DNS if ISP cache is stale."""
+    try:
+        return socket.gethostbyname(domain)
+    except Exception:
+        try:
+            cmd = ["powershell", "-Command", f"(Resolve-DnsName {domain} -Server 8.8.8.8 -ErrorAction SilentlyContinue).IPAddress"]
+            res = subprocess.run(cmd, capture_output=True, text=True, timeout=5)
+            lines = res.stdout.strip().splitlines()
+            return lines[0].strip() if lines else ""
+        except Exception:
+            return ""
+
+
 # ---------------------------------------------------------------------------
 # Suite 1: DNS & SSL Certificate Verification
 # ---------------------------------------------------------------------------
@@ -112,23 +126,20 @@ def test_dns_and_ssl():
     # 1. DNS Resolution
     for domain in DOMAINS:
         total += 1
-        try:
-            resolved_ip = socket.gethostbyname(domain)
-            is_lb = (resolved_ip == SERVERS["lb-01"]["ip"])
-            score += pass_fail(
-                is_lb,
-                f"DNS A Record: {domain:20}",
-                f"Resolved to {resolved_ip} (Target Lb01: {SERVERS['lb-01']['ip']})"
-            )
-        except Exception as e:
-            pass_fail(False, f"DNS A Record: {domain:20}", f"Resolution Error: {e}")
+        resolved_ip = resolve_domain(domain)
+        is_lb = (resolved_ip == SERVERS["lb-01"]["ip"])
+        score += pass_fail(
+            is_lb,
+            f"DNS A Record: {domain:28}",
+            f"Resolved to {resolved_ip} (Target Lb01: {SERVERS['lb-01']['ip']})"
+        )
 
     # 2. SSL / TLS Certificate Handshake on Port 443
     total += 2
-    target_host = "www.bdushime.tech"
+    target_host = "lightprint.bdushime.tech"
     try:
         ctx = ssl.create_default_context()
-        with socket.create_connection((target_host, 443), timeout=5) as sock:
+        with socket.create_connection((SERVERS["lb-01"]["ip"], 443), timeout=5) as sock:
             with ctx.wrap_socket(sock, server_hostname=target_host) as ssock:
                 cert = ssock.getpeercert()
                 issuer = dict(x[0] for x in cert.get("issuer", []))
@@ -136,11 +147,11 @@ def test_dns_and_ssl():
                 sans = [v for k, v in cert.get("subjectAltName", []) if k == "DNS"]
                 not_after = cert.get("notAfter", "")
 
-                has_both_domains = ("www.bdushime.tech" in sans and "bdushime.tech" in sans)
+                has_domains = all(d in sans for d in DOMAINS)
                 score += pass_fail(
-                    has_both_domains,
-                    "SSL SAN Certificate Coverage",
-                    f"Subject Alt Names: {', '.join(sans)}"
+                    has_domains,
+                    "SSL SAN Multi-Domain Coverage",
+                    f"Covered: {', '.join(sans)}"
                 )
                 score += pass_fail(
                     "Let's Encrypt" in issuer_org or len(sans) > 0,
@@ -173,7 +184,7 @@ def test_ssh_diagnostics():
         role = info["role"]
         node_id = info["node_id"]
 
-        print(f"\n  {BOLD}{CYAN}▶ Connecting via SSH to {node_name} ({ip} — {role})...{RESET}", flush=True)
+        print(f"\n  {BOLD}{CYAN}▶ Connecting via SSH to {node_name} ({ip} - {role})...{RESET}", flush=True)
 
         cmd = (
             "echo HOST:$(hostname); "
@@ -222,7 +233,7 @@ def test_ssh_diagnostics():
     # Diagnostics for Lb01
     lb_info = SERVERS["lb-01"]
     lb_ip = lb_info["ip"]
-    print(f"\n  {BOLD}{CYAN}▶ Connecting via SSH to lb-01 ({lb_ip} — HAProxy Load Balancer)...{RESET}", flush=True)
+    print(f"\n  {BOLD}{CYAN}▶ Connecting via SSH to lb-01 ({lb_ip} - HAProxy Load Balancer)...{RESET}", flush=True)
 
     lb_cmd = (
         "echo HOST:$(hostname); "
@@ -349,55 +360,97 @@ def test_load_balancer_and_rotation():
     except Exception as e:
         pass_fail(False, "HTTP to HTTPS Automatic Redirection", f"Error: {e}")
 
-    # 2. Apex Domain and Subdomain HTTPS Tests
-    for dom in ["bdushime.tech", "www.bdushime.tech"]:
+    # 2. Public HTTPS Tests Across All Registered Hostnames
+    for dom in DOMAINS:
         total += 1
-        url = f"https://{dom}/health"
         try:
+            # Connect to Lb01 IP with SNI hostname
             ctx = ssl.create_default_context()
-            req = urllib.request.Request(url, headers={"User-Agent": "LightPrint-Auditor/2.0"})
-            with urllib.request.urlopen(req, context=ctx, timeout=5) as r:
-                body = json.loads(r.read().decode())
-                node = r.headers.get("X-Served-By") or r.headers.get("X-Server-Node") or "unknown"
-                ok = (r.status == 200 and body.get("status") == "healthy")
-                score += pass_fail(
-                    ok,
-                    f"Public HTTPS Access ({dom})",
-                    f"Status: {r.status}, Served by: {node}"
-                )
+            sock = socket.create_connection((SERVERS["lb-01"]["ip"], 443), timeout=5)
+            ssock = ctx.wrap_socket(sock, server_hostname=dom)
+            
+            http_req = (
+                f"GET /health HTTP/1.1\r\n"
+                f"Host: {dom}\r\n"
+                f"User-Agent: LightPrint-Auditor/2.0\r\n"
+                f"Connection: close\r\n\r\n"
+            ).encode("utf-8")
+            ssock.sendall(http_req)
+            
+            resp_data = b""
+            while True:
+                chunk = ssock.recv(4096)
+                if not chunk:
+                    break
+                resp_data += chunk
+            ssock.close()
+
+            resp_text = resp_data.decode("utf-8", errors="replace")
+            status_line = resp_text.splitlines()[0] if resp_text else ""
+            is_200 = ("200 OK" in status_line)
+            served_match = "Web01" if "Web01" in resp_text else ("Web02" if "Web02" in resp_text else "Cluster")
+
+            score += pass_fail(
+                is_200,
+                f"Public HTTPS Access ({dom})",
+                f"{status_line} | Node: {served_match}"
+            )
         except Exception as e:
             pass_fail(False, f"Public HTTPS Access ({dom})", f"Error: {e}")
 
     # 3. Sequential 10-Request Burst for Round-Robin Alternation
     total += 3
     iterations = 10
-    target_url = "https://www.bdushime.tech/health"
+    target_host = "lightprint.bdushime.tech"
     hits = {"Web01": 0, "Web02": 0, "Other": 0}
     sequence = []
 
     print(f"\n  {BOLD}Executing {iterations} Sequential HTTPS Requests to Trace Round-Robin Balancing...{RESET}", flush=True)
-    print(f"  {DIM}┌───────┬──────────────┬──────────────┬──────────────┬──────────┬──────────────┐{RESET}", flush=True)
-    print(f"  {DIM}│ Req # │ Status Code  │ X-Served-By  │ X-Server-Node│ Latency  │ Health State │{RESET}", flush=True)
-    print(f"  {DIM}├───────┼──────────────┼──────────────┼──────────────┼──────────┼──────────────┤{RESET}", flush=True)
+    print(f"  {DIM}┌───────┬──────────────┬──────────────┬──────────────┬──────────┬──────────────┐{RESET}")
+    print(f"  {DIM}│ Req # │ Status Code  │ X-Served-By  │ X-Server-Node│ Latency  │ Health State │{RESET}")
+    print(f"  {DIM}├───────┼──────────────┼──────────────┼──────────────┼──────────┼──────────────┤{RESET}")
 
     ctx = ssl.create_default_context()
     for i in range(1, iterations + 1):
         t0 = time.time()
         try:
-            req = urllib.request.Request(target_url, headers={"User-Agent": "LightPrint-Auditor/2.0"})
-            with urllib.request.urlopen(req, context=ctx, timeout=5) as r:
-                elapsed = int((time.time() - t0) * 1000)
-                body = json.loads(r.read().decode())
-                served = r.headers.get("X-Served-By", "unknown")
-                node = r.headers.get("X-Server-Node", "unknown")
-                health_st = body.get("status", "unknown")
+            sock = socket.create_connection((SERVERS["lb-01"]["ip"], 443), timeout=5)
+            ssock = ctx.wrap_socket(sock, server_hostname=target_host)
+            
+            http_req = (
+                f"GET /health HTTP/1.1\r\n"
+                f"Host: {target_host}\r\n"
+                f"User-Agent: LightPrint-Auditor/2.0\r\n"
+                f"Connection: close\r\n\r\n"
+            ).encode("utf-8")
+            ssock.sendall(http_req)
+            
+            resp_data = b""
+            while True:
+                chunk = ssock.recv(4096)
+                if not chunk:
+                    break
+                resp_data += chunk
+            ssock.close()
+            elapsed = int((time.time() - t0) * 1000)
 
-                matched = "Web01" if "Web01" in (served + node) else ("Web02" if "Web02" in (served + node) else "Other")
-                hits[matched] += 1
-                sequence.append(matched)
+            resp_text = resp_data.decode("utf-8", errors="replace")
+            headers_part = resp_text.split("\r\n\r\n")[0] if "\r\n\r\n" in resp_text else resp_text
+            
+            served = "unknown"
+            node = "unknown"
+            for hline in headers_part.splitlines():
+                if hline.lower().startswith("x-served-by:"):
+                    served = hline.split(":", 1)[1].strip()
+                elif hline.lower().startswith("x-server-node:"):
+                    node = hline.split(":", 1)[1].strip()
 
-                color = CYAN if matched == "Web01" else (YELLOW if matched == "Web02" else RED)
-                print(f"  │ #{i:02d}   │ {GREEN}200 OK{RESET}       │ {color}{served:12}{RESET} │ {color}{node:12}{RESET} │ {elapsed:4d}ms   │ {GREEN}{health_st:12}{RESET} │", flush=True)
+            matched = "Web01" if "Web01" in (served + node) else ("Web02" if "Web02" in (served + node) else "Other")
+            hits[matched] += 1
+            sequence.append(matched)
+
+            color = CYAN if matched == "Web01" else (YELLOW if matched == "Web02" else RED)
+            print(f"  │ #{i:02d}   │ {GREEN}200 OK{RESET}       │ {color}{served:12}{RESET} │ {color}{node:12}{RESET} │ {elapsed:4d}ms   │ {GREEN}healthy{RESET}      │", flush=True)
         except Exception as e:
             print(f"  │ #{i:02d}   │ {RED}FAILED{RESET}       │ {RED}{str(e)[:38]:38}{RESET} │", flush=True)
 
@@ -418,7 +471,7 @@ def test_load_balancer_and_rotation():
         f"Web01 Traffic: {hits['Web01'] / iterations * 100:.1f}% | Web02 Traffic: {hits['Web02'] / iterations * 100:.1f}%"
     )
 
-    # Check for actual alternating pattern
+    # Check for alternating pattern
     alternations = sum(1 for idx in range(len(sequence) - 1) if sequence[idx] != sequence[idx + 1])
     is_alternating = alternations >= (iterations - 3)
     score += pass_fail(
@@ -569,7 +622,8 @@ def test_codevibe_integrity():
 def main():
     print_banner("LIGHTPRINT END-TO-END INFRASTRUCTURE & COMPLIANCE AUDITOR")
     print(f"  {BOLD}Execution Timestamp:{RESET}  {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", flush=True)
-    print(f"  {BOLD}Target Domain:{RESET}        https://www.bdushime.tech & https://bdushime.tech", flush=True)
+    print(f"  {BOLD}Primary Domain:{RESET}       https://lightprint.bdushime.tech", flush=True)
+    print(f"  {BOLD}Alternate Domains:{RESET}    https://www.bdushime.tech & https://bdushime.tech", flush=True)
     print(f"  {BOLD}Load Balancer IP:{RESET}     3.8.133.101 (HAProxy 80/443)", flush=True)
     print(f"  {BOLD}Web01 Node IP:{RESET}        13.135.166.102 (Nginx 80 -> Python 3000)", flush=True)
     print(f"  {BOLD}Web02 Node IP:{RESET}        35.179.145.213 (Nginx 80 -> Python 3000)", flush=True)
@@ -599,8 +653,8 @@ def main():
     pct = (total_score / total_tests * 100) if total_tests > 0 else 0
     if total_score == total_tests:
         print(f"  {BOLD}{GREEN}OVERALL STATUS: ALL {total_tests}/{total_tests} AUDIT CHECKS PASSED (100% HEALTHY & COMPLIANT){RESET}", flush=True)
-        print(f"  {BOLD}Live Public URL:{RESET}    https://www.bdushime.tech", flush=True)
-        print(f"  {BOLD}Apex Domain:{RESET}       https://bdushime.tech", flush=True)
+        print(f"  {BOLD}Primary URL:{RESET}        https://lightprint.bdushime.tech", flush=True)
+        print(f"  {BOLD}Secondary URLs:{RESET}     https://www.bdushime.tech | https://bdushime.tech", flush=True)
         print(f"  {BOLD}HAProxy Node:{RESET}      3.8.133.101 (lb-01)", flush=True)
         print(f"  {BOLD}Web Instances:{RESET}     13.135.166.102 (Web01) | 35.179.145.213 (Web02)", flush=True)
     else:

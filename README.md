@@ -1,4 +1,4 @@
-# LightPrint — Terms of Service Unmasked
+# LightPrint - Terms of Service Unmasked
 
 > **"Stop blindly clicking 'I Agree'."**  
 > An accessible, distributed web application that unmasks predatory legal clauses, tracking traps, and forced arbitration hidden inside 50-page Terms of Service agreements.
