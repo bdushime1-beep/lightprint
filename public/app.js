@@ -295,10 +295,12 @@ async function loadInitialServices() {
 
   try {
     const res = await fetch("/api/featured");
-    updateNodeBadge(res.headers.get("X-Server-Node"));
+    const nodeHeader = res.headers.get("X-Server-Node") || res.headers.get("X-Served-By");
+    if (nodeHeader) updateNodeBadge(nodeHeader);
 
     if (res.ok) {
       const data = await res.json();
+      if (data.serverNode) updateNodeBadge(data.serverNode);
       state.services = data.services || [];
       renderTable();
       return;
