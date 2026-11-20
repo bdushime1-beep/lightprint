@@ -3,10 +3,12 @@
 > **"Stop blindly clicking 'I Agree'."**  
 > An accessible, distributed web application that unmasks predatory legal clauses, tracking traps, and forced arbitration hidden inside 50-page Terms of Service agreements.
 
-* **Live Load Balancer URL:** [https://www.bdushime.tech](https://www.bdushime.tech) (and [https://bdushime.tech](https://bdushime.tech))  
-* **Web01 Direct Node:** `http://web-01.bdushime.tech` (`13.135.166.102:80`)  
-* **Web02 Direct Node:** `http://web-02.bdushime.tech` (`35.179.145.213:80`)  
-* **Demo Video Walkthrough (<= 2 min):** [Watch on YouTube](https://youtu.be/placeholder-demo)  
+* **Live Application URL:** [https://lightprint.bdushime.tech](https://lightprint.bdushime.tech)  
+* **Production Domain Mirrors:** [https://www.bdushime.tech](https://www.bdushime.tech) & [https://bdushime.tech](https://bdushime.tech)  
+* **Load Balancer (Lb01):** `3.8.133.101:80/443` (HAProxy SSL Termination)  
+* **Web01 Node:** `13.135.166.102:80` (Nginx -> Python 3000)  
+* **Web02 Node:** `35.179.145.213:80` (Nginx -> Python 3000)  
+* **Demo Video Walkthrough:** [Watch on YouTube](https://youtu.be/g7Ju2BeUhIY)  
 * **GitHub Repository:** [https://github.com/bdushime1-beep/lightprint](https://github.com/bdushime1-beep/lightprint)  
 * **Author:** B. Dushime (`b.dushime1@alustudent.com`)
 
@@ -264,9 +266,12 @@ SSH into **Lb01** and configure Nginx as a reverse proxy load balancer:
 
 ---
 
-## 9. 2-Minute Demo Video Walkthrough Outline
+## 9. Demo Video Walkthrough & Architecture Tour
 
-* **0:00 - 0:25**: Introduction to LightPrint, problem statement, and running the application locally on `http://localhost:3000`.
-* **0:25 - 0:55**: Interactive features walkthrough: searching YouTube and Spotify, filtering by Grade E, and inspecting the clause breakdown modal with direct legal quotes.
-* **0:55 - 1:20**: Demonstrating the Live Clause Scanner: pasting custom fine print and seeing regex catch forced arbitration and data-sharing clauses.
-* **1:20 - 2:00**: Deployment verification: accessing the app via the **Load Balancer (Lb01)**, refreshing to show requests alternating between **Web01** and **Web02** via the `X-Server-Node` header.
+* **Video Link:** [Watch Demo on YouTube](https://youtu.be/g7Ju2BeUhIY)
+* **What is demonstrated:**
+  1. Local application startup and zero-latency execution (`http://localhost:3000`).
+  2. ToS;DR API integration: searching platforms, Grade A-E filters, and clause breakdown modal.
+  3. Live Contract Scanner: client-side regex detection of forced arbitration and liability waivers.
+  4. Multi-tier production deployment: HTTPS access on `https://lightprint.bdushime.tech` with HAProxy load-balancing and live `Web01` / `Web02` traffic rotation.
+  5. Automated verification suite execution (`test_cluster.py` 34/34 checks passing).
