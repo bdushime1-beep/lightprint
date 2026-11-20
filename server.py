@@ -24,7 +24,7 @@ SEED_SERVICES = [
         "rating": {"human": "E", "letter": "E", "hex": "#dc3545"},
         "urls": ["spotify.com"],
         "is_comprehensively_reviewed": True,
-        "summary": "Tracks users across apps and involves many advertising third parties."
+        "summary": "Tracks users across apps and devices; shares data with dozens of advertising partners."
     },
     {
         "id": "274",
@@ -32,7 +32,7 @@ SEED_SERVICES = [
         "rating": {"human": "E", "letter": "E", "hex": "#dc3545"},
         "urls": ["youtube.com"],
         "is_comprehensively_reviewed": True,
-        "summary": "Holds perpetual rights to content; tracks viewing habits across Google ecosystem."
+        "summary": "Holds perpetual worldwide license to uploaded content; extensive behavioral tracking."
     },
     {
         "id": "194",
@@ -40,7 +40,7 @@ SEED_SERVICES = [
         "rating": {"human": "D", "letter": "D", "hex": "#f97316"},
         "urls": ["reddit.com"],
         "is_comprehensively_reviewed": True,
-        "summary": "Licenses user posts for commercial AI training; forced arbitration waiver."
+        "summary": "Licenses user posts for commercial AI training; requires forced arbitration for legal disputes."
     },
     {
         "id": "196",
@@ -48,7 +48,7 @@ SEED_SERVICES = [
         "rating": {"human": "D", "letter": "D", "hex": "#f97316"},
         "urls": ["discord.com"],
         "is_comprehensively_reviewed": True,
-        "summary": "Can read user messages; reserves right to change terms without direct notice."
+        "summary": "Can monitor user interactions; reserves authority to alter terms without direct email notice."
     },
     {
         "id": "218",
@@ -56,7 +56,7 @@ SEED_SERVICES = [
         "rating": {"human": "C", "letter": "C", "hex": "#eab308"},
         "urls": ["steampowered.com"],
         "is_comprehensively_reviewed": True,
-        "summary": "Valve provides standard digital subscription licensing; strict non-transferable games."
+        "summary": "Provides digital software subscription licenses; purchases are non-transferable."
     },
     {
         "id": "327",
@@ -64,7 +64,7 @@ SEED_SERVICES = [
         "rating": {"human": "B", "letter": "B", "hex": "#14b8a6"},
         "urls": ["riseup.net"],
         "is_comprehensively_reviewed": True,
-        "summary": "Privacy-focused communication service; minimal logging and zero commercial tracking."
+        "summary": "Privacy-focused communication service; minimal logging policy and zero commercial profiling."
     },
     {
         "id": "246",
@@ -72,7 +72,47 @@ SEED_SERVICES = [
         "rating": {"human": "A", "letter": "A", "hex": "#22c55e"},
         "urls": ["duckduckgo.com"],
         "is_comprehensively_reviewed": True,
-        "summary": "Does not collect or share personal information; no search history profiling."
+        "summary": "Does not collect or share personal information; searches are completely untracked."
+    },
+    {
+        "id": "202",
+        "name": "Wikipedia",
+        "rating": {"human": "A", "letter": "A", "hex": "#22c55e"},
+        "urls": ["wikipedia.org"],
+        "is_comprehensively_reviewed": True,
+        "summary": "Operated by non-profit Wikimedia Foundation; zero commercial ad trackers or user data sales."
+    },
+    {
+        "id": "319",
+        "name": "Signal",
+        "rating": {"human": "A", "letter": "A", "hex": "#22c55e"},
+        "urls": ["signal.org"],
+        "is_comprehensively_reviewed": True,
+        "summary": "End-to-end encrypted messaging; keeps zero logs of contact lists, messages, or metadata."
+    },
+    {
+        "id": "301",
+        "name": "Netflix",
+        "rating": {"human": "C", "letter": "C", "hex": "#eab308"},
+        "urls": ["netflix.com"],
+        "is_comprehensively_reviewed": True,
+        "summary": "Tracks viewing habits to personalize content; standard commercial entertainment policy."
+    },
+    {
+        "id": "226",
+        "name": "Telegram",
+        "rating": {"human": "D", "letter": "D", "hex": "#f97316"},
+        "urls": ["telegram.org"],
+        "is_comprehensively_reviewed": True,
+        "summary": "Standard chats are cloud-synced and not end-to-end encrypted by default."
+    },
+    {
+        "id": "1488",
+        "name": "TikTok",
+        "rating": {"human": "E", "letter": "E", "hex": "#dc3545"},
+        "urls": ["tiktok.com"],
+        "is_comprehensively_reviewed": True,
+        "summary": "Broad device telemetry, keystroke pattern tracking, and extensive advertising data sharing."
     }
 ]
 

@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LightPrint — Terms of Service Legal Intelligence</title>
-  <meta name="description" content="Lean, sharp legal intelligence dashboard auditing corporate Terms of Service.">
+  <title>LightPrint — Fine Print &amp; Terms of Service Reader</title>
+  <meta name="description" content="Free tool to read and analyze Terms of Service, app privacy policies, and apartment lease clauses in plain English.">
   <script>
     (function() {
       try {
@@ -18,108 +18,40 @@
 <body>
   <a href="#main-content" class="skip-link">Skip to main content [Enter]</a>
 
-  <div class="app-shell">
-    <!-- Left Sharp Sidebar -->
-    <aside class="app-sidebar">
-      <div>
-        <div class="sidebar-brand">
-          <div class="brand-icon-box">
+  <div class="site-wrapper">
+    <!-- Top Header -->
+    <header class="site-header">
+      <div class="header-inner">
+        <div class="brand-group">
+          <div class="brand-logo">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square">
               <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/>
               <line x1="12" y1="22" x2="12" y2="15.5"/>
               <polyline points="22 8.5 12 15.5 2 8.5"/>
             </svg>
           </div>
-          <span class="brand-text">LIGHTPRINT</span>
-        </div>
-
-        <ul class="nav-list">
-          <li>
-            <a href="#dashboard" class="nav-link active">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square">
-                <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-                <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
-              </svg>
-              <span>Dashboard</span>
-            </a>
-          </li>
-          <li>
-            <a href="#services-table" class="nav-link">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square">
-                <path d="M14 2H6v20h12V8l-4-6z"/><polyline points="14 2 14 8 20 8"/>
-                <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
-              </svg>
-              <span>Terms Index</span>
-            </a>
-          </li>
-          <li>
-            <a href="#clause-scanner" class="nav-link">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square">
-                <polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>
-              </svg>
-              <span>Clause Scanner</span>
-            </a>
-          </li>
-          <li>
-            <a href="#cluster-nodes" class="nav-link">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square">
-                <rect x="2" y="3" width="20" height="7"/><rect x="2" y="14" width="20" height="7"/>
-                <line x1="6" y1="6.5" x2="6.01" y2="6.5"/><line x1="6" y1="17.5" x2="6.01" y2="17.5"/>
-              </svg>
-              <span>Cluster Nodes</span>
-            </a>
-          </li>
-          <li>
-            <a href="#settings" class="nav-link">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square">
-                <circle cx="12" cy="12" r="3"/>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-              </svg>
-              <span>Settings</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <div class="sidebar-footer">
-        <div class="user-badge">
-          <div class="user-avatar-initials">BD</div>
-          <div class="user-names">
-            <span class="user-fullname">B. Dushime</span>
-            <span class="user-subtext">b.dushime1</span>
-          </div>
-        </div>
-      </div>
-    </aside>
-
-    <!-- Main Content Stream -->
-    <div class="app-main">
-      <!-- Topbar Navigation -->
-      <header class="app-topbar">
-        <div class="topbar-left">
-          <h1 class="topbar-heading">LEGAL AUDIT STREAM</h1>
-          <div class="topbar-search-box">
-            <svg class="icon-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square">
-              <circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/>
-            </svg>
-            <input 
-              type="text" 
-              id="globalSearchInput" 
-              placeholder="Search platform index (Spotify, Reddit, Discord)..."
-              autocomplete="off"
-            >
+          <div>
+            <span class="brand-title">LightPrint</span>
+            <span class="brand-tagline">Know what you sign</span>
           </div>
         </div>
 
-        <div class="topbar-right">
-          <div class="cluster-node-pill" title="Active server node behind load balancer">
-            <span class="dot-live"></span>
-            <span>NODE: <strong id="nodeName">Web01</strong></span>
+        <nav class="nav-links" aria-label="Main Navigation">
+          <a href="#directory" class="nav-item active">Browse Apps</a>
+          <a href="#scanner" class="nav-item">Scan Any Contract</a>
+          <a href="#grading-guide" class="nav-item">How Grades Work</a>
+        </nav>
+
+        <div class="header-controls">
+          <!-- Subtle node indicator for ALU assignment rubric -->
+          <div class="server-node-tag" title="Backend server node serving your request">
+            <span class="live-dot"></span>
+            <span>Server: <strong id="nodeName">Web01</strong></span>
           </div>
 
-          <!-- Sharp Segmented Dark/Light Switch -->
-          <div class="theme-segmented-switch" role="group" aria-label="Color theme selector">
-            <button type="button" class="theme-btn active" id="btnThemeLight" aria-pressed="true" title="Light Theme">
+          <!-- Dual-Segmented Theme Switch -->
+          <div class="theme-switch" role="group" aria-label="Theme selector">
+            <button type="button" class="theme-switch-btn active" id="btnThemeLight" aria-pressed="true" title="Light Theme">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square">
                 <circle cx="12" cy="12" r="4"/>
                 <line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/>
@@ -129,7 +61,7 @@
               </svg>
               <span>LIGHT</span>
             </button>
-            <button type="button" class="theme-btn" id="btnThemeDark" aria-pressed="false" title="Dark Theme">
+            <button type="button" class="theme-switch-btn" id="btnThemeDark" aria-pressed="false" title="Dark Theme">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square">
                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
               </svg>
@@ -137,195 +69,219 @@
             </button>
           </div>
         </div>
-      </header>
+      </div>
+    </header>
 
-      <!-- Dashboard View -->
-      <main id="main-content" class="dashboard-body">
-        <!-- 3 Sharp KPI Cards Row -->
-        <section class="kpi-row">
-          <div class="kpi-box pink">
-            <div class="kpi-icon-wrap">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square">
-                <ellipse cx="12" cy="5" rx="9" ry="3"/>
-                <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
-                <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
-              </svg>
-            </div>
-            <div>
-              <p class="kpi-label-text">PLATFORMS INDEXED</p>
-              <h2 class="kpi-value-text">10,290+</h2>
-            </div>
-          </div>
+    <main id="main-content" class="main-container">
+      <!-- Hero & Quick Search -->
+      <section class="hero-section">
+        <div class="hero-content">
+          <div class="badge-free">100% Free · No Sign Up · Zero Tracking</div>
+          <h1 class="hero-title">The terms you never read, summarized in plain English.</h1>
+          <p class="hero-desc">
+            Search 10,000+ app agreements or paste any contract clause to uncover hidden waivers, tracking trackers, and predatory terms before you click "I Agree".
+          </p>
+        </div>
 
-          <div class="kpi-box blue">
-            <div class="kpi-icon-wrap">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                <line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-              </svg>
-            </div>
-            <div>
-              <p class="kpi-label-text">PREDATORY RATIO</p>
-              <h2 class="kpi-value-text">71% Flagged</h2>
-            </div>
-          </div>
-
-          <div class="kpi-box purple">
-            <div class="kpi-icon-wrap">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square">
-                <rect x="2" y="3" width="20" height="7"/><rect x="2" y="14" width="20" height="7"/>
-                <line x1="6" y1="6.5" x2="6.01" y2="6.5"/><line x1="6" y1="17.5" x2="6.01" y2="17.5"/>
-              </svg>
-            </div>
-            <div>
-              <p class="kpi-label-text">LOAD BALANCER CLUSTER</p>
-              <h2 class="kpi-value-text">Web01 / Web02</h2>
-            </div>
-          </div>
-        </section>
-
-        <!-- Notification Status Bar -->
-        <div id="statusBanner" class="status-bar info" role="status" aria-live="polite" hidden></div>
-
-        <!-- Quick Query Card -->
-        <section class="search-card">
-          <div class="search-title-row">
-            <h2>QUERY TOS;DR LEGAL DATABASE</h2>
-            <span>REST API v2 / v4</span>
-          </div>
-
-          <form id="searchForm" class="search-action-row" role="search" onsubmit="return false;">
+        <div class="search-box-card">
+          <form id="searchForm" class="search-input-group" role="search" onsubmit="return false;">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square">
+              <circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/>
+            </svg>
             <input 
               type="text" 
               id="searchInput" 
-              placeholder="Search company or platform (e.g. YouTube, Spotify, Reddit, Steam, Discord)..."
+              placeholder="Search an app or website (e.g. Netflix, Spotify, TikTok, Discord, Steam, Reddit)..."
               autocomplete="off"
             >
-            <button type="button" id="clearBtn" class="btn-inspect-sharp" hidden>CLEAR</button>
-            <button type="submit" id="searchBtn" class="btn-primary-sharp">SEARCH</button>
+            <button type="button" id="clearBtn" class="btn-clear-search" hidden title="Clear search input">Clear</button>
+            <button type="submit" id="searchBtn" class="btn-primary-action">Search</button>
+            <button type="button" id="resetAllBtn" class="btn-outline-action" title="Reset search and filters">Reset All</button>
           </form>
 
-          <div class="chips-line">
-            <span class="chips-label">INDEX:</span>
-            <button type="button" class="chip-btn" data-query="YouTube">YouTube</button>
-            <button type="button" class="chip-btn" data-query="Spotify">Spotify</button>
-            <button type="button" class="chip-btn" data-query="Reddit">Reddit</button>
-            <button type="button" class="chip-btn" data-query="Discord">Discord</button>
-            <button type="button" class="chip-btn" data-query="Steam">Steam</button>
-            <button type="button" class="chip-btn" data-query="RiseUp">RiseUp</button>
-            <button type="button" class="chip-btn" data-query="DuckDuckGo">DuckDuckGo</button>
+          <div class="quick-chips">
+            <span class="chips-title">POPULAR:</span>
+            <button type="button" class="chip-item" data-query="Netflix">Netflix</button>
+            <button type="button" class="chip-item" data-query="YouTube">YouTube</button>
+            <button type="button" class="chip-item" data-query="Spotify">Spotify</button>
+            <button type="button" class="chip-item" data-query="TikTok">TikTok</button>
+            <button type="button" class="chip-item" data-query="Reddit">Reddit</button>
+            <button type="button" class="chip-item" data-query="Discord">Discord</button>
+            <button type="button" class="chip-item" data-query="Steam">Steam</button>
+            <button type="button" class="chip-item" data-query="Signal">Signal</button>
+            <button type="button" class="chip-item" data-query="Wikipedia">Wikipedia</button>
+            <button type="button" class="chip-item" data-query="DuckDuckGo">DuckDuckGo</button>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <!-- Data Table Panel -->
-        <section id="services-table" class="table-panel">
-          <div class="table-toolbar">
-            <div class="toolbar-title-wrap">
-              <h2 id="resultsTitle">PLATFORM DOSSIERS</h2>
-              <span id="resultsCount" class="items-tag">7 ITEMS</span>
-            </div>
+      <!-- Toast / Notification Banner -->
+      <div id="statusBanner" class="status-banner info" role="status" aria-live="polite" hidden></div>
 
-            <!-- Grade Filter Tabs -->
-            <div class="grade-filters" role="group" aria-label="Filter platforms by privacy grade">
-              <button type="button" class="filter-tab active" data-grade="ALL">ALL</button>
-              <button type="button" class="filter-tab" data-grade="A">GRADE A</button>
-              <button type="button" class="filter-tab" data-grade="B">GRADE B</button>
-              <button type="button" class="filter-tab" data-grade="C">GRADE C</button>
-              <button type="button" class="filter-tab" data-grade="D">GRADE D</button>
-              <button type="button" class="filter-tab" data-grade="E">GRADE E</button>
-            </div>
-
-            <div>
-              <label for="sortSelect" class="sr-only">Sort records</label>
-              <select id="sortSelect" class="sort-select-box">
-                <option value="worst-first">Worst Privacy First (E → A)</option>
-                <option value="best-first">Best Privacy First (A → E)</option>
-                <option value="name-az">Name (A to Z)</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Sharp Table -->
-          <div class="table-overflow">
-            <table class="sharp-table" aria-live="polite">
-              <thead>
-                <tr>
-                  <th>PLATFORM</th>
-                  <th>PRIVACY GRADE</th>
-                  <th>AUDIT STATUS</th>
-                  <th>KEY SUMMARY</th>
-                  <th style="text-align: right;">ACTION</th>
-                </tr>
-              </thead>
-              <tbody id="servicesTableBody">
-                <!-- Populated via app.js -->
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        <!-- Live Clause Scanner Panel -->
-        <section id="clause-scanner" class="scanner-panel">
-          <div class="scanner-heading">
-            <h3>CONTRACT &amp; LEASE CLAUSE SCANNER</h3>
-            <p>Paste fine print, lease stipulations, or software terms to execute heuristic regex pattern matching for predatory clauses.</p>
-          </div>
-
-          <div class="presets-row">
-            <span class="presets-label">PRESETS:</span>
-            <button type="button" class="preset-pill-btn" data-preset="arbitration">Forced Arbitration Waiver</button>
-            <button type="button" class="preset-pill-btn" data-preset="unilateral">Unilateral Alteration Without Notice</button>
-            <button type="button" class="preset-pill-btn" data-preset="copyright">Perpetual Content License</button>
-            <button type="button" class="preset-pill-btn" data-preset="sharing">Third-Party Data Sale</button>
-          </div>
-
+      <!-- Section 1: Popular App Directory -->
+      <section id="directory" class="content-card">
+        <div class="card-header-bar">
           <div>
-            <textarea 
-              id="scannerInput" 
-              class="sharp-textarea" 
-              rows="4" 
-              placeholder="Paste contract terms or fine print paragraph here..."
-            ></textarea>
+            <h2 id="resultsTitle" class="section-heading">Platform Privacy Ratings</h2>
+            <p class="section-subtext">Community-audited terms of service summaries from the open ToS;DR project.</p>
+          </div>
+          <span id="resultsCount" class="counter-badge">12 platforms</span>
+        </div>
 
-            <div class="scanner-actions-row">
-              <button type="button" id="scanBtn" class="btn-primary-sharp">
+        <!-- Grade Filter Strip -->
+        <div class="filter-controls-row">
+          <div class="grade-filter-group" role="group" aria-label="Filter platforms by privacy grade">
+            <button type="button" class="grade-filter-btn active" data-grade="ALL">All Platforms</button>
+            <button type="button" class="grade-filter-btn" data-grade="A">Grade A (Safe)</button>
+            <button type="button" class="grade-filter-btn" data-grade="B">Grade B (Good)</button>
+            <button type="button" class="grade-filter-btn" data-grade="C">Grade C (Average)</button>
+            <button type="button" class="grade-filter-btn" data-grade="D">Grade D (Concerning)</button>
+            <button type="button" class="grade-filter-btn" data-grade="E">Grade E (High Risk)</button>
+          </div>
+
+          <div class="filter-actions-right">
+            <label for="sortSelect" class="sr-only">Sort records</label>
+            <select id="sortSelect" class="select-sort">
+              <option value="worst-first">Worst Privacy First (E → A)</option>
+              <option value="best-first">Best Privacy First (A → E)</option>
+              <option value="name-az">Name (A to Z)</option>
+            </select>
+            <button type="button" id="resetFiltersBtn" class="btn-reset-filters" title="Reset all filters back to default">Reset Filters</button>
+          </div>
+        </div>
+
+        <!-- Results Table -->
+        <div class="table-container">
+          <table class="services-table" aria-live="polite">
+            <thead>
+              <tr>
+                <th>Service</th>
+                <th>Privacy Grade</th>
+                <th>Review Status</th>
+                <th>Main Takeaway</th>
+                <th style="text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="servicesTableBody">
+              <!-- Dynamically populated via app.js -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Section 2: Custom Fine Print & Lease Scanner -->
+      <section id="scanner" class="content-card">
+        <div class="card-header-bar">
+          <div>
+            <h2 class="section-heading">Paste &amp; Check Any Contract</h2>
+            <p class="section-subtext">Checking an apartment lease, university waiver, gym contract, or updated app policy? Paste the text below to run an instant automated trap check.</p>
+          </div>
+        </div>
+
+        <div class="presets-container">
+          <span class="presets-caption">TRY SAMPLE PRESETS:</span>
+          <button type="button" class="preset-pill" data-preset="arbitration">Forced Arbitration Waiver</button>
+          <button type="button" class="preset-pill" data-preset="unilateral">Terms Change Without Notice</button>
+          <button type="button" class="preset-pill" data-preset="copyright">Perpetual Content Ownership</button>
+          <button type="button" class="preset-pill" data-preset="sharing">Third-Party Data Selling</button>
+          <button type="button" class="preset-pill" data-preset="lease">Apartment Lease Waiver</button>
+        </div>
+
+        <div class="scanner-editor">
+          <textarea 
+            id="scannerInput" 
+            class="contract-textarea" 
+            rows="5" 
+            placeholder="Paste contract terms, apartment lease clause, or privacy policy paragraph here..."
+          ></textarea>
+
+          <div class="scanner-toolbar">
+            <div class="scanner-buttons-left">
+              <button type="button" id="scanBtn" class="btn-primary-action">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square">
                   <polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>
                 </svg>
-                <span>SCAN EXCERPT</span>
+                <span>Analyze Clauses</span>
               </button>
-              <button type="button" id="clearScannerBtn" class="btn-inspect-sharp">CLEAR</button>
+              <button type="button" id="clearScannerBtn" class="btn-outline-action">Clear &amp; Reset</button>
             </div>
+            <span class="scanner-hint">Heuristic regex scanner running offline in your browser.</span>
+          </div>
+        </div>
+
+        <div id="scannerResults" class="verdict-container" hidden>
+          <!-- Injected via app.js -->
+        </div>
+      </section>
+
+      <!-- Section 3: How the Privacy Grades Work -->
+      <section id="grading-guide" class="content-card">
+        <div class="card-header-bar">
+          <div>
+            <h2 class="section-heading">How Privacy Grades Work</h2>
+            <p class="section-subtext">Grades are assigned based on how respectfully a service treats your personal data, rights, and privacy.</p>
+          </div>
+        </div>
+
+        <div class="grade-guide-grid">
+          <div class="grade-card grade-a-card">
+            <span class="grade-pill grade-A">GRADE A</span>
+            <h3>Very Safe</h3>
+            <p>The terms are fair, transparent, and user-friendly. No tracking across other apps, no data selling, and you keep full ownership of your content.</p>
           </div>
 
-          <div id="scannerResults" class="verdict-alert" hidden>
-            <!-- Injected via app.js -->
+          <div class="grade-card grade-b-card">
+            <span class="grade-pill grade-B">GRADE B</span>
+            <h3>Good &amp; Fair</h3>
+            <p>The service treats your data reasonably. It collects minimal necessary diagnostics and gives fair notice before modifying its terms.</p>
           </div>
-        </section>
-      </main>
 
-      <!-- Colophon -->
-      <footer class="app-colophon">
-        <p>
-          <strong>LIGHTPRINT</strong> — Distributed Web Application for <em>Playing Around with APIs</em>. 
-          Architecture: <strong>Web01</strong> &amp; <strong>Web02</strong> behind <strong>Lb01</strong> | 
-          Source: <a href="https://tosdr.org" target="_blank" rel="noopener" class="colophon-link">ToS;DR API</a>
+          <div class="grade-card grade-c-card">
+            <span class="grade-pill grade-C">GRADE C</span>
+            <h3>Average / Standard</h3>
+            <p>Typical commercial agreements (e.g. streaming, gaming). Standard diagnostics and marketing cookies, but generally predictable.</p>
+          </div>
+
+          <div class="grade-card grade-d-card">
+            <span class="grade-pill grade-D">GRADE D</span>
+            <h3>Concerning</h3>
+            <p>Contains questionable clauses: forced arbitration (giving up your right to sue in court), broad behavioral tracking, or terms changes without warning.</p>
+          </div>
+
+          <div class="grade-card grade-e-card">
+            <span class="grade-pill grade-E">GRADE E</span>
+            <h3>High Risk</h3>
+            <p>Significant red flags: sells your personal info to third-party data brokers, tracks you across other apps, or claims permanent rights to your uploaded work.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Site Footer -->
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p class="footer-primary">
+          <strong>LightPrint</strong> is a 100% free, open digital rights tool. No accounts required. No personal data collected.
         </p>
-      </footer>
-    </div>
+        <p class="footer-secondary">
+          Data powered by the open <a href="https://tosdr.org" target="_blank" rel="noopener">ToS;DR API</a>. 
+          Architecture: Dual load-balanced server instances (<strong>Web01</strong> &amp; <strong>Web02</strong>) behind <strong>Lb01</strong> for the ALU <em>Playing Around with APIs</em> assignment.
+        </p>
+      </div>
+    </footer>
   </div>
 
-  <!-- Inspection Modal Docket -->
+  <!-- Platform Details Modal -->
   <div id="detailModal" class="modal-backdrop" hidden style="display: none;" role="dialog" aria-modal="true" aria-labelledby="modalServiceName">
     <div class="modal-window">
-      <div class="modal-header-sharp">
+      <div class="modal-header">
         <div>
           <h2 id="modalServiceName">Platform Details</h2>
-          <p id="modalServiceUrls">DOSSIER #0000</p>
+          <p id="modalServiceUrls">Audited platform terms</p>
         </div>
         <div style="display: flex; align-items: center; gap: 0.75rem;">
-          <span id="modalGradeBadge" class="stamp-grade grade-NA">GRADE -</span>
-          <button type="button" id="closeModalBtn" class="btn-close-sharp" aria-label="Close dialog" onclick="closeModal()">
+          <span id="modalGradeBadge" class="grade-pill grade-NA">GRADE -</span>
+          <button type="button" id="closeModalBtn" class="btn-modal-close" aria-label="Close dialog" onclick="closeModal()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square">
               <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
             </svg>
@@ -333,14 +289,14 @@
         </div>
       </div>
 
-      <div class="modal-tabs-strip">
-        <button type="button" class="modal-tab-sharp active" data-tab="all">ALL CLAUSES (<span id="countAll">0</span>)</button>
-        <button type="button" class="modal-tab-sharp" data-tab="bad">RED FLAGS (<span id="countBad">0</span>)</button>
-        <button type="button" class="modal-tab-sharp" data-tab="neutral">NEUTRAL (<span id="countNeutral">0</span>)</button>
-        <button type="button" class="modal-tab-sharp" data-tab="good">EXEMPLARY (<span id="countGood">0</span>)</button>
+      <div class="modal-tab-bar">
+        <button type="button" class="modal-filter-btn active" data-tab="all">All Points (<span id="countAll">0</span>)</button>
+        <button type="button" class="modal-filter-btn" data-tab="bad">Red Flags (<span id="countBad">0</span>)</button>
+        <button type="button" class="modal-filter-btn" data-tab="neutral">Neutral (<span id="countNeutral">0</span>)</button>
+        <button type="button" class="modal-filter-btn" data-tab="good">Good Points (<span id="countGood">0</span>)</button>
       </div>
 
-      <div id="modalPointsList" class="modal-body-scroll">
+      <div id="modalPointsList" class="modal-scroll-area">
         <!-- Injected via app.js -->
       </div>
     </div>
